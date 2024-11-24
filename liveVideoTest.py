@@ -76,8 +76,9 @@ while(True):
 vid.release() 
 # Destroy all the windows 
 cv2.destroyAllWindows() 
+
 if recVideo:
-    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/videoTest1.avi'
+    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/videoTest2.avi'
     videoLength = len(video)
     width = len(video[0])
     length = len(video[0][0])
