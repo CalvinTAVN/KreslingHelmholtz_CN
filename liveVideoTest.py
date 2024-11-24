@@ -85,7 +85,7 @@ if recVideo:
     print(f"single frame type{video[0].shape}")
     out = cv2.VideoWriter(videoOutputFile,  
                          cv2.VideoWriter_fourcc(*'MJPG'), 
-                         10, (width, length)) 
+                         10, (length, width)) 
     for frame in video:
         out.write(frame) # frame is a numpy.ndarray with shape (1280, 720, 3)
     out.release()
