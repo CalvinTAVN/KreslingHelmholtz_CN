@@ -83,7 +83,7 @@ if recVideo:
     width = len(video[0])
     length = len(video[0][0])
     print(f"vidLength: {videoLength} width: {width} length: {length}")
-    out = cv2.VideoWriter(videoOutputFile, cv2.VideoWriter_fourcc(*'mp4v'), 1/sample_time, (length, width))
+    out = cv2.VideoWriter(videoOutputFile, cv2.VideoWriter_fourcc(*'mp4v'), 10, (length, width))
     for frame in video:
         out.write(frame) # frame is a numpy.ndarray with shape (1280, 720, 3)
     out.release()
