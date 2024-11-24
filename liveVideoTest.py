@@ -77,13 +77,15 @@ vid.release()
 # Destroy all the windows 
 cv2.destroyAllWindows() 
 if recVideo:
-    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/videoTest1.mp4'
+    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/videoTest1.avi'
     videoLength = len(video)
     width = len(video[0])
     length = len(video[0][0])
     print(f"vidLength: {videoLength} width: {width} length: {length}")
     print(f"single frame type{video[0].shape}")
-    out = cv2.VideoWriter(videoOutputFile, cv2.VideoWriter_fourcc(*'mp4v'), 10, (length, width))
+    out = cv2.VideoWriter(videoOutputFile,  
+                         cv2.VideoWriter_fourcc(*'MJPG'), 
+                         10, (width, length)) 
     for frame in video:
         out.write(frame) # frame is a numpy.ndarray with shape (1280, 720, 3)
     out.release()
