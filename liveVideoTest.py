@@ -54,12 +54,13 @@ while(True):
     prev_time = current_time    	        
     # Capture the video frame by frame
     ret, frame = vid.read() 
-    new_frame = undistortImage(frame, mtx, dist)
+    #unDistort Image does not work right now
+    #new_frame = undistortImage(frame, mtx, dist)
 
     
         
     cv2.imshow('frame', frame) 
-    video.append(new_frame)
+    video.append(frame)
     key = cv2.waitKey(1)
 
     if (key == ord('s')):
