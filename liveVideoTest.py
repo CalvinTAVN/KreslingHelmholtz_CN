@@ -39,10 +39,9 @@ print(f"fps: {fps}")
     
                                                                                                                                                    
 
-
 video = []
 ret, frame = vid.read() 
-sample_time = 0.01 #sample time is 100 ms
+sample_time = 0.1 #sample time is 100 ms
 prev_time = time.time()
 current_time = time.time()
 
@@ -86,7 +85,7 @@ if recVideo:
     print(f"single frame type{video[0].shape}")
     out = cv2.VideoWriter(videoOutputFile,  
                          cv2.VideoWriter_fourcc(*'MJPG'), 
-                         10, (length, width)) 
+                         1/sample_time, (length, width)) 
     for frame in video:
         out.write(frame) # frame is a numpy.ndarray with shape (1280, 720, 3)
     out.release()
