@@ -32,7 +32,15 @@ def undistortImage(frame, matrix_coefficients, distortion_coefficients):
     dst = dst[y:y+h, x:x+w]
     return dst     
   
-vid = cv2.VideoCapture(1) 
+motion = input("input camera Number(0 side View, 1 top View): ")
+try: 
+    motion = int(motion)
+except:
+    print("Error: Invalid Input")
+    print("setting default value to 0")
+    motion = 0
+
+vid = cv2.VideoCapture(motion) 
 fps = vid.get(cv2.CAP_PROP_FPS)
 print(f"fps: {fps}")
 

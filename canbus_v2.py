@@ -32,7 +32,7 @@ message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 bus.send(message, timeout=0.5)
 time.sleep(0.01)
 
-df = pd.read_csv("fwdbwd50.csv")
+df = pd.read_csv("waveforms/fwdbwd50.csv")
 samples1 = list(df['f1'])
 samples2 = list(df['f2'])
 samples3 = list(df['f3'])
