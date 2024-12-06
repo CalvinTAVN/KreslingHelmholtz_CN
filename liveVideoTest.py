@@ -85,7 +85,8 @@ vid.release()
 cv2.destroyAllWindows() 
 
 if recVideo:
-    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/rollingMotion1.avi'
+    fileName = input("give file name: ")
+    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/' + fileName + '.avi'
     videoLength = len(video)
     width = len(video[0])
     length = len(video[0][0])
