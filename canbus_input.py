@@ -245,7 +245,6 @@ while True:
 		
 		angle = input("Angle:")
 		angle = int(angle)
-		sudo 
 		speed = input("Speed:")
 		speed = float(speed)
 		
