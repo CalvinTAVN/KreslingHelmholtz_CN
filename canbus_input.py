@@ -214,7 +214,9 @@ Ts = 0.01
 print("hello world")
 
 
-bus = can.interface.Bus(bustype='socketcan', channel='can0', bitrate=1000000)
+bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
+bus.shutdown()
+bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
 print("Canbus Successfully Setup. \n")
 
 
@@ -243,7 +245,7 @@ while True:
 		
 		angle = input("Angle:")
 		angle = int(angle)
-		
+		sudo 
 		speed = input("Speed:")
 		speed = float(speed)
 		
@@ -377,6 +379,7 @@ tx = encode(values)
 message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 bus.send(message, timeout=0.5)
 time.sleep(0.01)
+bus.shutdown()
 print('Sequence Stopped')
 
 
