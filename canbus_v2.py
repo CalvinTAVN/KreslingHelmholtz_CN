@@ -33,7 +33,7 @@ bus.send(message, timeout=0.5)
 time.sleep(0.01)
 print("Reading File")
 
-df = pd.read_csv("waveforms/rotate720.csv")
+df = pd.read_csv("waveforms/rotateCW.csv")
 samples1 = list(df['f1'])
 samples2 = list(df['f2'])
 samples3 = list(df['f3'])
