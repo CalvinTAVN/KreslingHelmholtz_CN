@@ -1,9 +1,46 @@
-import spidev
 import time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import os
+def rotate(angle, direction, speed, init, A, Ts):
+	theta0 = np.arctan2(init[1], init[0])
+	print("Initial Angle is: ", theta0*180/np.pi)
+	
+	if (theta0 < 0):
+		theta0 = theta0 + 2*np.pi
+	
+	angle = angle*np.pi/180.0
+	if (angle < 0):
+		angle = angle + 2*np.pi
+	
+	dphi = angle - theta0
+	
+	if (direction == 1):  #if clockwise turn
+		if (dphi < 0):
+			dphi = dphi + 2*np.pi
+		n = int(dphi/(2*np.pi*speed*Ts))
+		t = np.arange(n)*Ts
+		
+		print('dphi: ', dphi)
+		print('n: ', n)
+		
+		z = np.zeros(n)
+		x = A*np.cos(2*np.pi*speed*t + theta0)
+		y = A*np.sin(2*np.pi*speed*t + theta0)
+	elif (direction == -1):  #if counter-clockwise turn	
+		if (dphi > 0):
+			dphi = 2*np.pi - dphi
+		else:
+			dphi = abs(dphi)
+		n = abs(int(dphi/(2*np.pi*speed*Ts)))
+		t = np.arange(n)*Ts
+		
+		z = np.zeros(n)
+		x = A*np.cos(-2*np.pi*speed*t + theta0)
+		y = A*np.sin(-2*np.pi*speed*t + theta0)
+	
+	return [x,y,-z]
 def roll(step_no, angle, speed, init, A, Ts):
 	k = int(1/(4*speed*Ts))  #number of samples per quarter roll
 	[x0, y0, z0] = init #initial magnetization orientation
@@ -38,10 +75,6 @@ def roll(step_no, angle, speed, init, A, Ts):
 		return [x,y,-z]
 	
 	
-	
-	
-
-
 
 def sinwave(t, A, f, phi):
 	t = np.array(t)
@@ -61,46 +94,64 @@ def constant(t, A):
 
 
 
+#code to get it to roll forward in y direction and back
 Ts = 0.01
-
-t = np.arange(1000)*Ts
-first_Period = t[:750]
-second_Period = t[750:]
-x1 = [round(2*i)/2 for i in constant(first_Period, 40)]
-x2 = [round(2*i)/2 for i in constant(second_Period, -50)]
-x1.extend(x2)
-x = x1
-y = [round(2*i)/2 for i in constant(t, 0)]
-z = [round(2*i)/2 for i in constant(t, 0)]
-
-
-#to make it roll in diagonal direction
+#roll forward
 """
-[x1, y1, z1] = [round2half(i) for i in roll(5, 135, 0.1, [0,0,1], 30, Ts)]
-[x2, y2, z2] = [round2half(i) for i in roll(5, 20, 0.1, [0,0,-1], 30, Ts)]
-
-
-x1 = round2half(x1)
-y1 = round2half(y1)
-z1 = round2half(z1)
-
-x = list(x1) + list(x2)
-y = list(y1) + list(y2)
-z = list(z1) + list(z2)
-
+[x1, y1, z1] = [round2half(i) for i in roll(4, 90, 0.1, [0, 0, 1], 20, Ts)]
+[x2, y2, z2] = [round2half(i) for i in roll(4, 270, 0.1, [0, 0, 1], 20, Ts)]
+"""
+#rotate
+[x1, y1, z1] = [round2half(i) for i in rotate(720, 1, 0.1, [1, 0, 0], 20, Ts)]
+[x2, y2, z2] = [round2half(i) for i in rotate(720, -1, 0.1, [1, 0, 0], 20, Ts)]
+x =list(x1) + list(x2)
+y =list(y1) + list(y2)
+z =list(z1) + list(z2)
+#we are sampling at 10 ms
 t = np.arange(len(x))*Ts
-"""
-plt.plot(t, x)
-plt.plot(t, y)
-plt.plot(t, z)
+
+
+#t = np.arange(1000)*Ts
+
+fileName = input("give file name: ")
+current_dir = os.getcwd()
+waveformFolder = os.path.join(current_dir, "waveforms")
+waveformPlotFolder = os.path.join(current_dir, "waveformPlot")
+waveformFilePath = os.path.join(waveformFolder, fileName + ".csv")
+waveformPlotFilePath = os.path.join(waveformPlotFolder, fileName + ".png")
+#plt.savefig(waveformPlotFilePath, format="png", bbox_inches="tight")
+plt.style.use('dark_background')
+
+# Plot x vs t
+plt.plot(t, x, label='I_x', color='blue', linewidth=2)
+
+# Plot y vs t
+plt.plot(t, y, label='I_y', color='red', linewidth=2)
+
+# Plot z vs t
+plt.plot(t, z, label='I_z', color='green', linewidth=2)
+
+# Set title and axis labels
+plt.title('Time Series Data - Current Over Time')
+plt.xlabel('Time')
+plt.ylabel('Current')
+
+# Add legend
+plt.legend()
+
+# Show the plot
 plt.show()
+
 
 #d = {'t':t, 'f1':sin1, 'f2':sin2, 'f3':sin3, 'f4':sin4, 'f5':sin5, 'f6':sin6}
 d = {'t':t, 'f1': x, 'f2':x, 'f3':y, 'f4':y, 'f5':z, 'f6':z}
 
 df = pd.DataFrame(d)
-df.to_csv("fwdbwd50.csv")
 
+#for linux
+#df.to_csv("KreslingHelmholtz_CN/waveforms/" + + fileName + '.csv')
+#for windows
+df.to_csv(waveformFilePath)
 
 
 
