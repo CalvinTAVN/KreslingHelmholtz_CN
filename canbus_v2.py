@@ -32,6 +32,7 @@ message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 bus.send(message, timeout=0.5)
 time.sleep(0.01)
 print("Reading File")
+
 df = pd.read_csv("waveforms/waveFormrollFwd.csv")
 samples1 = list(df['f1'])
 samples2 = list(df['f2'])
@@ -48,7 +49,7 @@ while True:
 	signal = input("Enter 'a' to start Sequence:")
 	if (signal == 'a'):
 		print("Sequence Started")
-		break;
+		break
 	
 
 resetToZero = True
