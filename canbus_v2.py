@@ -21,7 +21,7 @@ def encode(values):
 
 print("hello world")
 
-bus = can.interface.Bus(bustype='socketcan', channel='can0', bitrate=1000000)
+bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
 print("Canbus Successfully Setup. \n")
 
 
@@ -33,7 +33,7 @@ bus.send(message, timeout=0.5)
 time.sleep(0.01)
 print("Reading File")
 
-df = pd.read_csv("waveforms/waveFormrollFwd.csv")
+df = pd.read_csv("waveforms/fwdbwdX.csv")
 samples1 = list(df['f1'])
 samples2 = list(df['f2'])
 samples3 = list(df['f3'])
