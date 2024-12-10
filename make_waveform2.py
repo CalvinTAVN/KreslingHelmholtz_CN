@@ -102,13 +102,13 @@ Ts = 0.01
 [x2, y2, z2] = [round2half(i) for i in roll(4, 180, 0.1, [0, 0, 1], 20, Ts)]
 """
 #rotate
-"""
+
 [x1, y1, z1] = [round2half(i) for i in rotate(720, 1, 0.1, [1, 0, 0], 20, Ts)]
 [x2, y2, z2] = [round2half(i) for i in rotate(720, -1, 0.1, [1, 0, 0], 20, Ts)]
-"""
-t = np.arange(2000)*Ts
-t1 = t[:1001]
-t2 = t[1001:]
+
+#t = np.arange(2000)*Ts
+#t1 = t[:1001]
+#t2 = t[1001:]
 """
 print(constant(t, 30).tolist())
 x1 = [round2half(i) for i in constant(t, 30).tolist()]
@@ -118,12 +118,14 @@ y2 = [round2half(i) for i in constant(t, 0).tolist()]
 z1 = [round2half(i) for i in constant(t, 0).tolist()]
 z2 = [round2half(i) for i in constant(t, 0).tolist()]
 """
+"""
 x1 = constant(t1, 30).tolist()
 x2 = constant(t2, -30).tolist()
 y1 = constant(t1, 0).tolist()
 y2 = constant(t2, 0).tolist()
 z1 = constant(t1, 0).tolist()
 z2 = constant(t2, 0).tolist()
+"""
 x =list(x1) + list(x2)
 y =list(y1) + list(y2)
 z =list(z1) + list(z2)
@@ -131,7 +133,7 @@ print(len(x))
 print(len(y))
 print(len(z))
 #we are sampling at 10 ms
-#t = np.arange(len(x))*Ts
+t = np.arange(len(x))*Ts
 
 
 #t = np.arange(1000)*Ts
