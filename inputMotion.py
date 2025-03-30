@@ -119,6 +119,13 @@ def rotate(angle, direction, speed, init, A, Ts):
 	
 	return [x,y,-z,state]
 
+def con(vector, n ):
+	x = vector[0]*np.ones(n)
+	y = vector[1]*np.ones(n)
+	z = vector[2]*np.ones(n)
+	
+	return [x, x, y, y, z, z]
+
 
 #main code
 Ts = 0.01
@@ -188,6 +195,40 @@ while True:
 		print("Sequence Started")
 		for i in range(len(x)):
 			values = [x[i], x[i], y[i], y[i], z[i], z[i]]
+			tx = encode(values)
+			message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
+			bus.send(message, timeout=0.5)
+			time.sleep(0.01)
+		print('State:', state)
+	elif (motion == 'c'):
+		x = input("x:")
+		x = int(x)
+		
+		y = input("y:")
+		y = int(y)
+		
+		z = input("z:")
+		z = int(z)
+		
+		n = input("Number of samples:")
+		n = int(n)
+		
+		
+		[x1, x2, y1, y2, z1, z2] = con([x,y,z], n)
+
+		x1 = round2half(x1)
+		x2 = round2half(x2)
+		
+		y1 = round2half(y1)
+		y2 = round2half(y2)
+		
+		z1 = round2half(z1)
+		z2 = round2half(z2)
+
+
+		print("Sequence Started")
+		for i in range(len(x1)):
+			values = [x1[i], x2[i], y1[i], y2[i], z1[i], z2[i]]
 			tx = encode(values)
 			message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 			bus.send(message, timeout=0.5)
