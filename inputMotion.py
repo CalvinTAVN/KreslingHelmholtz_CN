@@ -173,7 +173,7 @@ while True:
 			message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 			bus.send(message, timeout=0.5)
 			time.sleep(0.01)
-			print("State: ", state)
+		print("end State: ", state)
 	elif (motion == 't'):
 		angle = input("angle: ")
 		angle = int(angle)
@@ -199,7 +199,7 @@ while True:
 			message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 			bus.send(message, timeout=0.5)
 			time.sleep(0.01)
-		print('State:', state)
+		print('end State:', state)
 	elif (motion == 'c'):
 		x = input("x:")
 		x = int(x)
@@ -233,7 +233,7 @@ while True:
 			message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 			bus.send(message, timeout=0.5)
 			time.sleep(0.01)
-		print('State:', state)
+		print('end: State:', state)
 	elif (motion == 's'):
 		break
 	else:
