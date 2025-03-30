@@ -75,7 +75,7 @@ while(True):
 
     if (key == ord('s')):
         break
-    elif (key == ord('r')):
+    elif (key == ord('p')):
         recVideo = True
     
     
