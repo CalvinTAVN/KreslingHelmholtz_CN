@@ -33,12 +33,14 @@ def undistortImage(frame, matrix_coefficients, distortion_coefficients):
     return dst     
   
 motion = input("input camera Number(0 side View, 1 top View): ")
-try: 
-    motion = int(motion)
-except:
-    print("Error: Invalid Input")
-    print("setting default value to 0")
-    motion = 0
+while True:
+    try: 
+        motion = int(motion)
+        break
+    except:
+        print("Error: Invalid Input")
+        print("setting default value to 0")
+        motion = 0
 
 vid = cv2.VideoCapture(motion) 
 fps = vid.get(cv2.CAP_PROP_FPS)
@@ -66,15 +68,15 @@ while(True):
 
     
         
-    cv2.imshow('frame', frame) 
-    video.append(frame)
+    cv2.imshow('frame', frame)
+    if recVideo == True: 
+        video.append(frame)
     key = cv2.waitKey(1)
 
     if (key == ord('s')):
         break
     elif (key == ord('r')):
         recVideo = True
-        break
     
     
 
@@ -86,7 +88,7 @@ cv2.destroyAllWindows()
 
 if recVideo:
     fileName = input("give file name: ")
-    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/' + fileName + '.avi'
+    videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/3_30_videos' + fileName + '.avi'
     videoLength = len(video)
     width = len(video[0])
     length = len(video[0][0])
