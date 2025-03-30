@@ -74,9 +74,12 @@ while(True):
     key = cv2.waitKey(1)
 
     if (key == ord('s')):
+        print("Breaking")
         break
+
     elif (key == ord('p')):
         recVideo = True
+        print("Recording Video Now")
     
     
 

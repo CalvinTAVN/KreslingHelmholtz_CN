@@ -44,7 +44,7 @@ output = cv2.VideoWriter('foldedRoll.avi',
 
 while(True):
     while(current_time-prev_time < sample_time):
-    	current_time = time.time()
+        current_time = time.time()
     prev_time = current_time    	        
     # Capture the video frame by frame
     ret, frame = vid.read() 
