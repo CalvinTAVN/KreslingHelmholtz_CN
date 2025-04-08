@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import can
-from scipy import Rotation as R
+from scipy.spatial.transform import Rotation as R
 import sys
 
 
@@ -233,9 +233,17 @@ while True:
 			message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 			bus.send(message, timeout=0.5)
 			time.sleep(0.01)
-		print('end: State:', state)
+		values = [0,0,0,0,0,0]
+		tx = encode(values)
+		message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
+		bus.send(message, timeout=0.5)
+		print("Sent back to 0")
+		time.sleep(0.01)
+		#print('end: State:', state)
+
 	elif (motion == 's'):
-		break
+		bre40
+		k
 	else:
 		print("Invalid Command")
 		zero()
