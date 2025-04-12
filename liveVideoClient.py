@@ -49,15 +49,14 @@ try:
                 break
             parsed = json.loads(line)
             vec_unit = np.array(parsed)
-            true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
-            print(true_vec_unit)
+            print(vec_unit)
             motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
             if (motion == 's'):
                 true_break = True
                 break
                 
             elif (motion == 'c'):
-                uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
+                uncompressedRotationVec = detect.rotate_vector_clockwise(vec_unit, 91.0685)
                 x = uncompressedRotationVec[0]
                 y = uncompressedRotationVec[1]
                 z = 0
@@ -70,12 +69,11 @@ try:
                 x = a * x
                 y = a * y
                 print("original vec: ", vec_unit)
-                print("true vec: ", true_vec_unit)
-                print('compressed: ', uncompressedRotationVec)
+                print('uncompressed: ', uncompressedRotationVec)
                 [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
                 encode.sendCAN(x1, y1, z1, can = can, bus = bus)
             elif (motion == 'u'):
-                uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 118.9315)
+                uncompressedRotationVec = detect.rotate_vector_counterclockwise(vec_unit, 118.9315)
                 x = uncompressedRotationVec[0]
                 y = uncompressedRotationVec[1]
                 z = 0
@@ -87,7 +85,7 @@ try:
 
                 x = a * x
                 y = a * y
-                print("true vec: ", true_vec_unit)
+                print("original vec: ", vec_unit)
                 print('compressed: ', uncompressedRotationVec)
                 [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
                 encode.sendCAN(x1, y1, z1, can = can, bus = bus)
