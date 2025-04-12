@@ -106,23 +106,36 @@ def pose_estimation(frame, aruco_dict_type, mtx, dist):
     return frame
 
 def pose_estimation2(frame, mtx, dist, aruco_detector):
-    corners, ids, rejectedImgPoints = aruco_detector.detectMarkers(frame)
-    
+    corners, ids, _ = aruco_detector.detectMarkers(frame)
+
     if ids is not None and len(corners) > 0:
-        # Draw detected markers with outlines and IDs
         aruco.drawDetectedMarkers(frame, corners, ids)
 
         for i in range(len(ids)):
-            corner = corners[i][0]  # Get the 4 corner points of the marker
+            corner = corners[i][0]  # shape: (4, 2)
             id_number = int(ids[i][0])
-            # Top-left corner to place the ID text
-            x, y = int(corner[0][0]), int(corner[0][1])
-            cv2.putText(frame, str(id_number), (x, y - 10), 
+
+            # Compute center of the marker
+            center = corner.mean(axis=0)  # (x, y)
+            center_int = center.astype(int)
+
+            # Compute direction vector parallel to top edge: top-left to top-right
+            vec_side = corner[1] - corner[0]  # top-right - top-left
+            vec_unit = vec_side / np.linalg.norm(vec_side)
+
+            # Define the end point of the vector for visualization (scale length as needed)
+            end_point = (center + 50 * vec_unit).astype(int)
+
+            # Draw marker ID
+            cv2.putText(frame, str(id_number), (center_int[0], center_int[1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
-            # OPTIONAL: Estimate pose (uncomment if you want pose vectors)
-            # rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners[i], marker_length, mtx, dist)
-            # cv2.drawFrameAxes(frame, mtx, dist, rvec[0], tvec[0], 10)
+            # Draw arrowed line from center in direction of side vector
+            cv2.arrowedLine(frame, tuple(center_int), tuple(end_point), 
+                            (255, 0, 0), 2, tipLength=0.3)
+
+            # Draw center dot
+            cv2.circle(frame, tuple(center_int), 4, (0, 255, 255), -1)
 
     return frame
 
