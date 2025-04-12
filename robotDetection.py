@@ -18,6 +18,7 @@ mtx = [[605.61062509, 0.00000000e+00, 331.38868735],
 mtx = np.array(mtx)
 
 dist = [-0.33923236,  0.07590603, -0.00238233, -0.00349838,  0.19293399]
+dist = np.array(dist)
 
 #display video with Arucomarkers
 motion = input("input camera Number(0 side View, 1 top View): ")
