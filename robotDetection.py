@@ -15,7 +15,7 @@ import spidev
 import pandas as pd
 import can
 from scipy.spatial.transform import Rotation as R
-import encodeFunctions as encode
+import KreslingHelmholtz_CN.encodeFunctions as encode
 
 
 print("OpenCV version:", cv2.__version__)
@@ -130,7 +130,7 @@ while(True):
         y = a * y
         [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
         encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-        
+
 
 
 
