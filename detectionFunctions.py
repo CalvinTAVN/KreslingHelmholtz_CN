@@ -143,6 +143,28 @@ def pose_estimation2(frame, mtx, dist, aruco_detector):
 
     return frame, vec_unit
 
+def rotate_vector_clockwise(vec, angle_deg):
+    """
+    Rotates a 2D vector clockwise by a specified angle in degrees.
+
+    Parameters:
+    - vec: np.ndarray or list-like with 2 elements (e.g., [vx, vy])
+    - angle_deg: float, angle in degrees to rotate clockwise
+
+    Returns:
+    - np.ndarray: rotated vector
+    """
+    angle_rad = np.deg2rad(angle_deg)
+    cos_theta = np.cos(angle_rad)
+    sin_theta = np.sin(angle_rad)
+
+    vx, vy = vec
+    rotated = np.array([
+        vx * cos_theta + vy * sin_theta,
+        -vx * sin_theta + vy * cos_theta
+    ])
+    return rotated
+
 
 #testing on a video
 def process_video(input_video_path, output_video_path, mtx, dist):

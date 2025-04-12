@@ -242,8 +242,7 @@ while True:
 		#print('end: State:', state)
 
 	elif (motion == 's'):
-		bre40
-		k
+		break
 	else:
 		print("Invalid Command")
 		zero()

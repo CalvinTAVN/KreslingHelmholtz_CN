@@ -1,3 +1,4 @@
+#stuff needed for detection Functions
 import os
 import math
 import numpy as np
@@ -8,6 +9,14 @@ import sys
 import matplotlib.pyplot as plt
 import detectionFunctions as detect
 import time 
+
+#stuff needed for encode Functions
+import spidev
+import pandas as pd
+import can
+from scipy.spatial.transform import Rotation as R
+import encodeFunctions as encode
+
 
 print("OpenCV version:", cv2.__version__)
 
@@ -62,17 +71,39 @@ current_time = time.time()
 
 recVideo = False
 
+#start Bus
+bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
+bus.shutdown()
+bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
+print("Canbus Successfully Setup. \n")
+
+#initial Values of helmholtz coils
+values = [0, 0, 0, 0, 0, 0]
+tx = encode(values)
+message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
+bus.send(message, timeout = 0.5)
+time.sleep(0.01)
+print("initial values are now all 0s")
+
+
 while(True):
     while(current_time-prev_time < sample_time):
          current_time = time.time()
     prev_time = current_time    	        
     # Capture the video frame by frame
     ret, frame = vid.read() 
+    #note vec unit of image is +y is right, +y is down
     processed_frame, vec_unit = detect.process_videoAruco2(frame, mtx, dist, detector)
-    print("imageFrame: ", vec_unit)
+
+    #note frame of actual Helmholtz Coil is +x is down, +y is left
     true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
-    print("trueFrame: ", true_vec_unit)
     #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
+    
+    #calculate vector needed to compress and uncompress
+    #If uncompressed, angle of difference is 182.1370 degrees / 2 is 91.0685
+    uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 91.0685)
+
+
     cv2.imshow('frame', processed_frame) 
 
     key = cv2.waitKey(1)
@@ -84,6 +115,23 @@ while(True):
     elif (key == ord('p')):
         recVideo = True
         print("Recording Video Now")
+    #if key is t, compress the object
+    elif (key == ord('c')):
+        uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 91.0685)
+        x = uncompressedRotationVec[0]
+        y = uncompressedRotationVec[1]
+        z = 0
+        a = input("amplitude: ")
+        a = int(a)
+        n = input("Number of samples:")
+        n = int(n)
+
+        x = a * x
+        y = a * y
+        [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+        encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+        
+
 
 
 vid.release()   
