@@ -42,8 +42,13 @@ sock_file = client.makefile(mode='r')
 
 try:
     while True:
+        
         for line in sock_file:
+            if not line:
+                print("server broke")
+                break
             parsed = json.loads(line)
+            print("parsed")
         true_vec_unit = np.array(parsed)
         print(true_vec_unit)
         motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
