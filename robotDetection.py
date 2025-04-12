@@ -79,7 +79,7 @@ print("Canbus Successfully Setup. \n")
 
 #initial Values of helmholtz coils
 values = [0, 0, 0, 0, 0, 0]
-tx = encode(values)
+tx = encode.encode(values)
 message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 bus.send(message, timeout = 0.5)
 time.sleep(0.01)
