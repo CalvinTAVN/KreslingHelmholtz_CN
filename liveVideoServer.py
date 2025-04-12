@@ -44,7 +44,8 @@ parameters = aruco.DetectorParameters()
 #parameters.perspectiveRemoveIgnoredMarginPerCell = 0.2
 detector = aruco.ArucoDetector(cv2.aruco_dict, parameters)
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server = socket.socket()
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server.bind(('localhost', 9999))      # IP address and port
 server.listen(1)
 print("Waiting for connection...")
@@ -99,7 +100,7 @@ try:
         elif (key == ord('p')):
             recVideo = True
             print("Recording Video Now")
-except: 
+finally: 
      print("closing, turning everything off")
 
 

@@ -48,7 +48,7 @@ try:
         motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
         if (motion == 's'):
             break
-except:
+finally:
     print("breaking everything")
 
 bus.shutdown()
