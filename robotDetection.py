@@ -129,6 +129,8 @@ try:
             print('compressed: ', uncompressedRotationVec)
             [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
             encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+        elif (key == ord('u')):
+            uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
 except:
     print("bus went wrong, shutting down")
 
