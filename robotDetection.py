@@ -85,51 +85,53 @@ bus.send(message, timeout = 0.5)
 time.sleep(0.01)
 print("initial values are now all 0s")
 
+try:
+    while(True):
+        while(current_time-prev_time < sample_time):
+            current_time = time.time()
+        prev_time = current_time    	        
+        # Capture the video frame by frame
+        ret, frame = vid.read() 
+        #note vec unit of image is +y is right, +y is down
+        processed_frame, vec_unit = detect.process_videoAruco2(frame, mtx, dist, detector)
 
-while(True):
-    while(current_time-prev_time < sample_time):
-         current_time = time.time()
-    prev_time = current_time    	        
-    # Capture the video frame by frame
-    ret, frame = vid.read() 
-    #note vec unit of image is +y is right, +y is down
-    processed_frame, vec_unit = detect.process_videoAruco2(frame, mtx, dist, detector)
+        #note frame of actual Helmholtz Coil is +x is down, +y is left
+        true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
+        #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
+        
 
-    #note frame of actual Helmholtz Coil is +x is down, +y is left
-    true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
-    #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
-    
+        cv2.imshow('frame', processed_frame) 
 
-    cv2.imshow('frame', processed_frame) 
+        key = cv2.waitKey(1)
 
-    key = cv2.waitKey(1)
+        if (key == ord('s')):
+            print("Breaking")
+            break
 
-    if (key == ord('s')):
-        print("Breaking")
-        break
+        elif (key == ord('p')):
+            recVideo = True
+            print("Recording Video Now")
+        #if key is t, compress the object
+        elif (key == ord('c')):
+            #since on the magnet, the x is flipped, we intead rotate CCW
+            uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
+            x = uncompressedRotationVec[0]
+            y = uncompressedRotationVec[1]
+            z = 0
+            a = input("amplitude: ")
+            a = int(a)
+            n = input("Number of samples:")
+            n = int(n)
 
-    elif (key == ord('p')):
-        recVideo = True
-        print("Recording Video Now")
-    #if key is t, compress the object
-    elif (key == ord('c')):
-        #since on the magnet, the x is flipped, we intead rotate CCW
-        uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
-        x = uncompressedRotationVec[0]
-        y = uncompressedRotationVec[1]
-        z = 0
-        a = input("amplitude: ")
-        a = int(a)
-        n = input("Number of samples:")
-        n = int(n)
-
-        x = a * x
-        y = a * y
-        print("true vec: ", true_vec_unit)
-        print('compressed: ', uncompressedRotationVec)
-        [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-        encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-
+            x = a * x
+            y = a * y
+            print("true vec: ", true_vec_unit)
+            print('compressed: ', uncompressedRotationVec)
+            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+except:
+    bus.shutdown()
+    print("bus went wrong, shutting down")
 
 
 
