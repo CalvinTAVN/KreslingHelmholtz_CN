@@ -99,10 +99,6 @@ while(True):
     true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
     #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
     
-    #calculate vector needed to compress and uncompress
-    #If uncompressed, angle of difference is 182.1370 degrees / 2 is 91.0685
-    uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 91.0685)
-
 
     cv2.imshow('frame', processed_frame) 
 
@@ -128,6 +124,8 @@ while(True):
 
         x = a * x
         y = a * y
+        print("true vec: ", true_vec_unit)
+        print('compressed: ', uncompressedRotationVec)
         [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
         encode.sendCAN(x1, y1, z1, can = can, bus = bus)
 
