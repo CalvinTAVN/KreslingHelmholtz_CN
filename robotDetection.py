@@ -113,7 +113,8 @@ while(True):
         print("Recording Video Now")
     #if key is t, compress the object
     elif (key == ord('c')):
-        uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 91.0685)
+        #since on the magnet, the x is flipped, we intead rotate CCW
+        uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
         x = uncompressedRotationVec[0]
         y = uncompressedRotationVec[1]
         z = 0
