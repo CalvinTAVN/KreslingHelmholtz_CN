@@ -84,7 +84,7 @@ try:
             break
                 
         elif (motion == 'c'):
-            uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 91.0685)
+            uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
             x = uncompressedRotationVec[0]
             y = uncompressedRotationVec[1]
             z = 0
@@ -102,7 +102,7 @@ try:
             [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
             encode.sendCAN(x1, y1, z1, can = can, bus = bus)
         elif (motion == 'u'):
-            uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 118.9315)
+            uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 118.9315)
             x = uncompressedRotationVec[0]
             y = uncompressedRotationVec[1]
             z = 0
