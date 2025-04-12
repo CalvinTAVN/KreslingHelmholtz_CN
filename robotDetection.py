@@ -69,7 +69,10 @@ while(True):
     # Capture the video frame by frame
     ret, frame = vid.read() 
     processed_frame, vec_unit = detect.process_videoAruco2(frame, mtx, dist, detector)
-    print(vec_unit)
+    print("imageFrame: ", vec_unit)
+    true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
+    print("trueFrame: ", true_vec_unit)
+    #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
     cv2.imshow('frame', processed_frame) 
 
     key = cv2.waitKey(1)
