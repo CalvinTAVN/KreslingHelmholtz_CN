@@ -86,9 +86,8 @@ try:
         processed_frame, vec_unit = detect.process_videoAruco2(frame, mtx, dist, detector)
 
         #note frame of actual Helmholtz Coil is +x is down, +y is left
-        true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
+        true_vec_unit = np.array([int(10 * vec_unit[1]), 10 * (-vec_unit[0])])
         #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
-        
         json_string = json.dumps(true_vec_unit.tolist())
         conn.sendall(json_string.encode('utf-8'))
 
