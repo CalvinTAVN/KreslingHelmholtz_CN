@@ -21,28 +21,18 @@ import encodeFunctions as encode
 import socket
 import json
 
-def clear_buffer(sock_file, sock):
-    """
-    Read all available lines from sock_file.
-    Return the most recent one, or None if nothing is currently available.
-    Does NOT assume the server is dead unless we detect an actual disconnect.
-    """
+def get_latest_message(sock_file):
     latest_line = None
-    sock.setblocking(False)  # temporarily non-blocking
+    while True:
+        line = sock_file.readline()
+        if not line:
+            break
+        latest_line = line
 
-    try:
-        while True:
-            try:
-                line = sock_file.readline()
-                if not line:
-                    break  # don't assume closed — could just be no full line yet
-                latest_line = line
-            except BlockingIOError:
-                break  # nothing more to read
-    finally:
-        sock.setblocking(True)  # restore blocking
-
-    return latest_line  # could be None if no new data yet
+    if latest_line:
+        return json.loads(latest_line)
+    else:
+        return None
 
 
 #starting can bus
@@ -67,12 +57,12 @@ sock_file = client.makefile(mode='r')
 true_break = False
 try:
     while True:
-        latest_line = clear_buffer(sock_file, client)
+        latest_line = get_latest_message(sock_file, client)
         if not latest_line:
-            print("No new data or server closed.")
-            break
-        parsed = json.loads(latest_line)
-        vec_unit = np.array(parsed)
+            vec_unit = [0, 0]
+        else:
+            parsed = json.loads(latest_line)
+            vec_unit = np.array(parsed)
         print("Latest vec_unit:", vec_unit)
         motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
         if (motion == 's'):
