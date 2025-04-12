@@ -107,10 +107,9 @@ def pose_estimation(frame, aruco_dict_type, mtx, dist):
 
 def pose_estimation2(frame, mtx, dist, aruco_detector):
     corners, ids, _ = aruco_detector.detectMarkers(frame)
-
+    vec_unit = np.array([0, 0])
     if ids is not None and len(corners) > 0:
         aruco.drawDetectedMarkers(frame, corners, ids)
-        vec_unit = np.array([0, 0])
         for i in range(len(ids)):
             corner = corners[i][0]  # shape: (4, 2)
             id_number = int(ids[i][0])
