@@ -105,6 +105,22 @@ def pose_estimation(frame, aruco_dict_type, mtx, dist):
             cv2.drawFrameAxes(frame, mtx, dist, rvec, tvec, 10)
     return frame
 
+def pose_estimation2(frame, mtx, dist, aruco_detector):
+    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    corners, ids, rejectedImgPoints = aruco_detector.detectMarkers(gray)
+    if len(corners) > 0:
+        for i in range(0, len(ids)):
+            #estimate position for each marker and return values rvec and tvec
+            rvec, tvec, trash = estimatePoseSingleMarkers(corners[i], 5, mtx, dist)
+
+            aruco.drawDetectedMarkers(frame, corners)
+            #print(f"rvec: {rvec}")
+            #print(f"tvec: {tvec}")
+            
+            #fix later
+            #cv2.drawFrameAxes(frame, mtx, dist, rvec, tvec, 10)
+    return frame
+
 
 #testing on a video
 def process_video(input_video_path, output_video_path, mtx, dist):
@@ -181,21 +197,7 @@ def calculateBoundingBox(corners, id, dict, frame_width, frame_height):
     return dict
     
 
-def pose_estimation2(frame, mtx, dist, aruco_detector):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    corners, ids, rejectedImgPoints = aruco_detector.detectMarkers(gray)
-    if len(corners) > 0:
-        for i in range(0, len(ids)):
-            #estimate position for each marker and return values rvec and tvec
-            rvec, tvec, trash = estimatePoseSingleMarkers(corners[i], 5, mtx, dist)
 
-            aruco.drawDetectedMarkers(frame, corners)
-            #print(f"rvec: {rvec}")
-            #print(f"tvec: {tvec}")
-            
-            #fix later
-            #cv2.drawFrameAxes(frame, mtx, dist, rvec, tvec, 10)
-    return corners, ids
 
 
 def process_videoAruco(input_image, mtx, dist):
