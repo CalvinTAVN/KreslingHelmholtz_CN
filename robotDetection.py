@@ -15,7 +15,7 @@ import spidev
 import pandas as pd
 import can
 from scipy.spatial.transform import Rotation as R
-import KreslingHelmholtz_CN.encodeFunctions as encode
+import encodeFunctions as encode
 
 
 print("OpenCV version:", cv2.__version__)
