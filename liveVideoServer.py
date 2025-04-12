@@ -46,7 +46,7 @@ detector = aruco.ArucoDetector(cv2.aruco_dict, parameters)
 
 server = socket.socket()
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server.bind(('localhost', 9999))      # IP address and port
+server.bind(('localhost', 9998))      # IP address and port
 server.listen(1)
 print("Waiting for connection...")
 

@@ -37,7 +37,7 @@ print("initial values are now all 0s")
 
 #setting up socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(('localhost', 9999))  # Connect to server
+client.connect(('localhost', 9998))  # Connect to server
 
 
 try:
