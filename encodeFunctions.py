@@ -7,9 +7,9 @@ import can
 from scipy.spatial.transform import Rotation as R
 import sys
 
-#given a set of values to encode for the 6 coils
+#given a set of values to encodeNum for the 6 coils
 #convert them to binary
-def encode(values):
+def encodeNum(values):
 	sign = 0
 	for i in range(6):
 		sign = sign + (values[i]<0)*2**i
@@ -20,7 +20,7 @@ def encode(values):
 #send zeros
 def zero():	
 	values = [0,0,0,0,0,0]
-	tx = encode(values)
+	tx = encodeNum(values)
 	message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 	bus.send(message, timeout=0.5)
 	time.sleep(0.01)
@@ -132,12 +132,12 @@ def sendCAN(x, y, z, can, bus):
 	z = round2half(z)
 	for i in range(len(x)):
 		values = [x[i], x[i], y[i], y[i], z[i], z[i]]
-		tx = encode(values)
+		tx = encodeNum(values)
 		message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 		bus.send(message, timeout=0.5)
 		time.sleep(0.01)
 	values = [0,0,0,0,0,0]
-	tx = encode(values)
+	tx = encodeNum(values)
 	message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
 	bus.send(message, timeout=0.5)
 	print("Sent back to 0")

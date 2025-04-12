@@ -10,14 +10,11 @@ import matplotlib.pyplot as plt
 import detectionFunctions as detect
 import time 
 
-#stuff needed for encode Functions
-import spidev
-import pandas as pd
-import can
-from scipy.spatial.transform import Rotation as R
-import encodeFunctions as encode
+#create a socket
+import socket
+import json
 
-
+#set up camera
 print("OpenCV version:", cv2.__version__)
 
 #calibration from new live Calibration
@@ -47,7 +44,14 @@ parameters = aruco.DetectorParameters()
 #parameters.perspectiveRemoveIgnoredMarginPerCell = 0.2
 detector = aruco.ArucoDetector(cv2.aruco_dict, parameters)
 
-#display video with Arucomarkers
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(('localhost', 9999))      # IP address and port
+server.listen(1)
+print("Waiting for connection...")
+
+conn, addr = server.accept()
+print("Connected by", addr)
+
 motion = input("input camera Number(0 side View, 1 top View): ")
 while True:
     try: 
@@ -61,7 +65,6 @@ while True:
 vid = cv2.VideoCapture(motion) 
 fps = vid.get(cv2.CAP_PROP_FPS)
 print(f"fps: {fps}")
-                                                                                                                                          
 
 video = []
 ret, frame = vid.read() 
@@ -71,22 +74,8 @@ current_time = time.time()
 
 recVideo = False
 
-#start Bus
-bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
-bus.shutdown()
-bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
-print("Canbus Successfully Setup. \n")
-
-#initial Values of helmholtz coils
-values = [0, 0, 0, 0, 0, 0]
-tx = encode.encode(values)
-message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
-bus.send(message, timeout = 0.5)
-time.sleep(0.01)
-print("initial values are now all 0s")
-
 try:
-    while(True):
+    while True:
         while(current_time-prev_time < sample_time):
             current_time = time.time()
         prev_time = current_time    	        
@@ -99,44 +88,26 @@ try:
         true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
         #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
         
+        conn.sendall(json.dumps(true_vec_unit).encode('utf-8'))
 
-        cv2.imshow('frame', processed_frame) 
-
-        key = cv2.waitKey(1)
-
+        cv2.imshow('frame', processed_frame)
+        key = cv2.waitKey(1) 
         if (key == ord('s')):
-            print("Breaking")
-            break
+                print("Breaking")
+                break
 
         elif (key == ord('p')):
             recVideo = True
             print("Recording Video Now")
-        #if key is t, compress the object
-        elif (key == ord('c')):
-            #since on the magnet, the x is flipped, we intead rotate CCW
-            uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
-            x = uncompressedRotationVec[0]
-            y = uncompressedRotationVec[1]
-            z = 0
-            a = input("amplitude: ")
-            a = int(a)
-            n = input("Number of samples:")
-            n = int(n)
-
-            x = a * x
-            y = a * y
-            print("true vec: ", true_vec_unit)
-            print('compressed: ', uncompressedRotationVec)
-            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-except:
-    print("bus went wrong, shutting down")
+except: 
+     print("closing, turning everything off")
 
 
-bus.shutdown()
-
+conn.close()
+server.close()
 vid.release()   
 # Destroy all the windows 
 cv2.destroyAllWindows() 
 
     
+
