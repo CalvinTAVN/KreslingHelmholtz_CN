@@ -48,7 +48,8 @@ try:
                 print("server broke")
                 break
             parsed = json.loads(line)
-            true_vec_unit = np.array(parsed)
+            vec_unit = np.array(parsed)
+            true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
             print(true_vec_unit)
             motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
             if (motion == 's'):
@@ -68,6 +69,7 @@ try:
 
                 x = a * x
                 y = a * y
+                print("original vec: ", vec_unit)
                 print("true vec: ", true_vec_unit)
                 print('compressed: ', uncompressedRotationVec)
                 [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
