@@ -201,7 +201,13 @@ def pose_estimation2(frame, mtx, dist, aruco_detector):
 def process_videoAruco(input_image, mtx, dist):
 
     #undistortedGray = undistortImage(input_image, mtx, dist)
-    frame = pose_estimation(input_image, aruco.DICT_4X4_50, mtx, dist)
+    frame = pose_estimation(input_image, mtx, dist)
+    return frame
+
+def process_videoAruco(input_image, mtx, dist, detector):
+
+    #undistortedGray = undistortImage(input_image, mtx, dist)
+    frame = pose_estimation2(input_image, mtx, dist, detector)
     return frame
 
 def process_video2(input_video_path, output_video_path, mtx, dist):

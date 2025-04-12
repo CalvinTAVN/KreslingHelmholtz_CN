@@ -20,6 +20,24 @@ mtx = np.array(mtx)
 dist = [-0.33923236,  0.07590603, -0.00238233, -0.00349838,  0.19293399]
 dist = np.array(dist)
 
+#initialize Detector
+cv2.aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+
+parameters = aruco.DetectorParameters()
+#parameters.adaptiveThreshWinSizeMin = 10
+#parameters.adaptiveThreshWinSizeMax = 23
+#parameters.adaptiveThreshWinSizeStep = 10
+#parameters.minMarkerPerimeterRate = 0.05
+#parameters.maxMarkerPerimeterRate = 0.2
+#parameters.polygonalApproxAccuracyRate = 0.1
+#parameters.minCornerDistanceRate = 0.05
+#parameters.minMarkerDistanceRate = 0.5
+#parameters.minDistanceToBorder = 3
+#parameters.markerBorderBits = 1
+#parameters.minOtsuStdDev = 5.0
+#parameters.perspectiveRemoveIgnoredMarginPerCell = 0.2
+detector = aruco.ArucoDetector(cv2.aruco_dict, parameters)
+
 #display video with Arucomarkers
 motion = input("input camera Number(0 side View, 1 top View): ")
 while True:
@@ -50,7 +68,7 @@ while(True):
     prev_time = current_time    	        
     # Capture the video frame by frame
     ret, frame = vid.read() 
-    processed_frame = detect.process_videoAruco(frame, mtx, dist)
+    processed_frame = detect.process_videoAruco2(frame, mtx, dist, detector)
     cv2.imshow('frame', processed_frame) 
 
     key = cv2.waitKey(1)
