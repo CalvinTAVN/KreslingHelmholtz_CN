@@ -23,7 +23,9 @@ import json
 
 def clear_buffer(sock_file, sock):
     """
-    Read all currently available lines from the socket buffer and return the most recent.
+    Read all available lines from sock_file.
+    Return the most recent one, or None if nothing is currently available.
+    Does NOT assume the server is dead unless we detect an actual disconnect.
     """
     latest_line = None
     sock.setblocking(False)  # temporarily non-blocking
@@ -33,14 +35,15 @@ def clear_buffer(sock_file, sock):
             try:
                 line = sock_file.readline()
                 if not line:
-                    break
+                    break  # don't assume closed — could just be no full line yet
                 latest_line = line
             except BlockingIOError:
-                break  # nothing left to read
+                break  # nothing more to read
     finally:
-        sock.setblocking(True)  # restore blocking mode
+        sock.setblocking(True)  # restore blocking
 
-    return latest_line
+    return latest_line  # could be None if no new data yet
+
 
 #starting can bus
 bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
