@@ -9,7 +9,6 @@ import sys
 import matplotlib.pyplot as plt
 import detectionFunctions as detect
 import time 
-import keyboard
 
 #stuff needed for encode Functions
 import spidev
@@ -51,12 +50,12 @@ try:
             parsed = json.loads(line)
             true_vec_unit = np.array(parsed)
             print(true_vec_unit)
-            print("enter input")
-            if keyboard.is_pressed('s'):
+            motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
+            if (motion == 's'):
                 true_break = True
                 break
                 
-            if keyboard.is_pressed('c'):
+            elif (motion == 'c'):
                 uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
                 x = uncompressedRotationVec[0]
                 y = uncompressedRotationVec[1]
@@ -73,7 +72,7 @@ try:
                 print('compressed: ', uncompressedRotationVec)
                 [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
                 encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-            if keyboard.is_pressed('u'):
+            elif (motion == ord('u')):
                 uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 118.9315)
                 x = uncompressedRotationVec[0]
                 y = uncompressedRotationVec[1]
