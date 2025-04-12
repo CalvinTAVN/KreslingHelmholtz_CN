@@ -106,19 +106,24 @@ def pose_estimation(frame, aruco_dict_type, mtx, dist):
     return frame
 
 def pose_estimation2(frame, mtx, dist, aruco_detector):
-    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     corners, ids, rejectedImgPoints = aruco_detector.detectMarkers(frame)
-    if len(corners) > 0:
-        for i in range(0, len(ids)):
-            #estimate position for each marker and return values rvec and tvec
-            rvec, tvec, trash = estimatePoseSingleMarkers(corners[i], 5, mtx, dist)
+    
+    if ids is not None and len(corners) > 0:
+        # Draw detected markers with outlines and IDs
+        aruco.drawDetectedMarkers(frame, corners, ids)
 
-            aruco.drawDetectedMarkers(frame, corners)
-            #print(f"rvec: {rvec}")
-            #print(f"tvec: {tvec}")
-            
-            #fix later
-            #cv2.drawFrameAxes(frame, mtx, dist, rvec, tvec, 10)
+        for i in range(len(ids)):
+            corner = corners[i][0]  # Get the 4 corner points of the marker
+            id_number = int(ids[i][0])
+            # Top-left corner to place the ID text
+            x, y = int(corner[0][0]), int(corner[0][1])
+            cv2.putText(frame, str(id_number), (x, y - 10), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
+            # OPTIONAL: Estimate pose (uncomment if you want pose vectors)
+            # rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners[i], marker_length, mtx, dist)
+            # cv2.drawFrameAxes(frame, mtx, dist, rvec[0], tvec[0], 10)
+
     return frame
 
 
