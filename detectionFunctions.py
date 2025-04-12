@@ -158,47 +158,6 @@ def process_video(input_video_path, output_video_path, mtx, dist):
     return(counter)
 
 #calculates the boundingbox to find the arucoMarkers in
-"""
-def calculateBoundingBox(frame, corners, ids, frame_width, frame_height):
-    newCenters = []
-    newCorners = [] 
-    newIds = []
-    new_Length = []
-    boundingBoxes = []
-    informationDict = {
-    }
-    for i in range(len(ids)):
-        #print(f"corner: {corner}")
-        point1 = corners[i][0][0]
-        point2 = corners[i][0][2]
-        #print(f"point1: {point1}")
-        #print(f"point2: {point2}")
-        center = (point1 + point2) / 2
-        center = [int(center[0]), int(center[1])]
-        length = 2 * int(math.sqrt((point1[0]-point2[0])**2 + (point1[1]-point2[1])**2))
-        #calculate box
-        topLeft = [max(0, min(center[0] - length, frame_width - 1)), max(0, min(center[1] - length, frame_height - 1))]
-        topRight = [max(0, min(center[0] + length, frame_width - 1)), max(0, min(center[1] - length, frame_height - 1))]
-        botRight = [max(0, min(center[0] + length, frame_width - 1)), max(0, min(center[1] + length, frame_height - 1))]
-        botLeft = [max(0, min(center[0] - length, frame_width - 1)), max(0, min(center[1] + length, frame_height - 1))]
-        #print(f"id: {ids[i]}")
-        #print(f"topLeft: {topLeft} topRight: {topRight} botRight: {botRight} botLeft: {botLeft}")
-        newCorner = np.array([[ topLeft, topRight, botRight, botLeft ]])
-        # - - , + -, + +, - +
-        
-        newCenters.append(center)
-        newCorners.append(newCorner)
-
-        newIds.append(np.array([ids[i][0]], dtype = np.int32))
-        new_Length.append(length)
-        
-        imageSnippet = frame[newCorners[i][0][0][1]: newCorners[i][0][2][1], newCorners[i][0][0][0]:newCorners[i][0][1][0]]
-        boundingBoxes.append(imageSnippet)
-        informationDict[ids[i][0]] = center, newCorner, imageSnippet
-
-    return newCenters, newCorners, newIds, boundingBoxes
-"""
-#calculates the boundingbox to find the arucoMarkers in
 def calculateBoundingBox(corners, id, dict, frame_width, frame_height):
     #print(f"corner: {corner}")
     point1 = corners[0][0]
@@ -239,7 +198,11 @@ def pose_estimation2(frame, mtx, dist, aruco_detector):
     return corners, ids
 
 
+def process_videoAruco(input_image, mtx, dist):
 
+    undistortedGray = undistortImage(input_image, mtx, dist)
+    frame = pose_estimation(undistortedGray, aruco.DICT_4X4_50, mtx, dist)
+    return frame
 
 def process_video2(input_video_path, output_video_path, mtx, dist):
     cap = cv2.VideoCapture(input_video_path)
