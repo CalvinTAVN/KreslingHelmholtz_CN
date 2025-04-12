@@ -89,7 +89,8 @@ try:
         true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
         #note (-1, -1) of image points straight up on image, meaning +y is down and +x is right
         
-        conn.sendall(json.dumps(true_vec_unit).encode('utf-8'))
+        json_string = json.dumps(true_vec_unit.tolist())
+        conn.sendall(json_string.encode('utf-8'))
 
         cv2.imshow('frame', processed_frame)
         key = cv2.waitKey(1) 
@@ -101,14 +102,13 @@ try:
             recVideo = True
             print("Recording Video Now")
 finally: 
-     print("closing, turning everything off")
+    print("closing, turning everything off")
+    conn.close()
+    server.close()
+    vid.release()   
+    # Destroy all the windows 
+    cv2.destroyAllWindows() 
 
-
-conn.close()
-server.close()
-vid.release()   
-# Destroy all the windows 
-cv2.destroyAllWindows() 
 
     
 

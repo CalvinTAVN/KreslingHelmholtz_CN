@@ -44,12 +44,13 @@ try:
     while True:
         received = client.recv(1024)
         parsed = json.loads(received.decode('utf-8'))
-        print(parsed)
+        true_vec_unit = np.array(parsed)
+        print(true_vec_unit)
         motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
         if (motion == 's'):
             break
 finally:
     print("breaking everything")
+    bus.shutdown()
+    client.close()
 
-bus.shutdown()
-client.close()
