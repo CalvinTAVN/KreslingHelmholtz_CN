@@ -44,8 +44,6 @@ try:
     while True:
         for line in sock_file:
             parsed = json.loads(line)
-            print("parsed: ", parsed.decode('utf-8'))
-        parsed = parsed.decode('utf-8')
         true_vec_unit = np.array(parsed)
         print(true_vec_unit)
         motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
