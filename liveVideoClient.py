@@ -70,7 +70,7 @@ sock_file = client.makefile(mode='r')
 true_break = False
 try:
     while True:
-        latest_line = get_latest_message(sock_file)
+        latest_line = get_most_recent_line(sock_file)
         if not latest_line:
             vec_unit = [0, 0]
         else:
