@@ -21,6 +21,27 @@ import encodeFunctions as encode
 import socket
 import json
 
+def clear_buffer(sock_file, sock):
+    """
+    Read all currently available lines from the socket buffer and return the most recent.
+    """
+    latest_line = None
+    sock.setblocking(False)  # temporarily non-blocking
+
+    try:
+        while True:
+            try:
+                line = sock_file.readline()
+                if not line:
+                    break
+                latest_line = line
+            except BlockingIOError:
+                break  # nothing left to read
+    finally:
+        sock.setblocking(True)  # restore blocking mode
+
+    return latest_line
+
 #starting can bus
 bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
 bus.shutdown()
@@ -35,7 +56,7 @@ bus.send(message, timeout = 0.5)
 time.sleep(0.01)
 print("initial values are now all 0s")
 
-# setting up socket
+#setting up socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(('localhost', 9998))  # Connect to server
 sock_file = client.makefile(mode='r')
@@ -43,72 +64,57 @@ sock_file = client.makefile(mode='r')
 true_break = False
 try:
     while True:
-        # Read all available lines and keep only the latest one
-        latest_line = None
-        while True:
-            line = sock_file.readline()
-            if not line:
-                print("Server closed the connection or sent no data.")
-                true_break = True
-                break
-            latest_line = line
-
-            # Stop reading if there's no more data buffered
-            if sock_file._peek(1) == b'':  
-                print("reached Latest Data")
-                break
-
-        if true_break or latest_line is None:
+        latest_line = clear_buffer(sock_file, client)
+        if not latest_line:
+            print("No new data or server closed.")
             break
-
         parsed = json.loads(latest_line)
         vec_unit = np.array(parsed)
         print("Latest vec_unit:", vec_unit)
-
-        motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop: ")
-        if motion == 's':
+        motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
+        if (motion == 's'):
             true_break = True
             break
-
-        elif motion == 'c':
+                
+        elif (motion == 'c'):
             uncompressedRotationVec = detect.rotate_vector_clockwise(vec_unit, 91.0685)
             x = uncompressedRotationVec[0]
             y = uncompressedRotationVec[1]
             z = 0
 
-            a = int(input("amplitude: "))
-            n = int(input("Number of samples: "))
+            a = input("amplitude: ")
+            a = int(a)
+            n = input("Number of samples:")
+            n = int(n)
 
             x = a * x
             y = a * y
-            print("original vec:", vec_unit)
-            print('uncompressed:', uncompressedRotationVec)
+            print("original vec: ", vec_unit)
+            print('uncompressed: ', uncompressedRotationVec)
             [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-            encode.sendCAN(x1, y1, z1, can=can, bus=bus)
-
-        elif motion == 'u':
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+        elif (motion == 'u'):
             uncompressedRotationVec = detect.rotate_vector_counterclockwise(vec_unit, 118.9315)
             x = uncompressedRotationVec[0]
             y = uncompressedRotationVec[1]
             z = 0
 
-            a = int(input("amplitude: "))
-            n = int(input("Number of samples: "))
+            a = input("amplitude: ")
+            a = int(a)
+            n = input("Number of samples:")
+            n = int(n)
 
             x = a * x
             y = a * y
-            print("original vec:", vec_unit)
-            print('compressed:', uncompressedRotationVec)
+            print("original vec: ", vec_unit)
+            print('compressed: ', uncompressedRotationVec)
             [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-            encode.sendCAN(x1, y1, z1, can=can, bus=bus)
-
-        # if other motion types are added, handle them here
-
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
         if true_break:
             break
-
 finally:
     print("breaking everything")
     bus.shutdown()
     sock_file.close()
     client.close()
+
