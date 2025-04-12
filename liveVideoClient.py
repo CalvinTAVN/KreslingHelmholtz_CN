@@ -74,8 +74,7 @@ try:
         if not latest_line:
             vec_unit = [0, 0]
         else:
-            parsed = json.loads(latest_line)
-            vec_unit = np.array(parsed)
+            vec_unit = np.array(latest_line)
         print("Latest vec_unit:", vec_unit)
         motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
         if (motion == 's'):
