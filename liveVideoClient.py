@@ -38,12 +38,13 @@ print("initial values are now all 0s")
 #setting up socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(('localhost', 9998))  # Connect to server
-
+sock_file = client.makefile(mode='r')
 
 try:
     while True:
-        received = client.recv(1024)
-        parsed = json.loads(received.decode('utf-8'))
+        for line in sock_file:
+            parsed = json.loads(line)
+        parsed = parsed.decode('utf-8')
         true_vec_unit = np.array(parsed)
         print(true_vec_unit)
         motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
