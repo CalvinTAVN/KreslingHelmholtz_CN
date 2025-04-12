@@ -118,11 +118,8 @@ while(True):
         x = uncompressedRotationVec[0]
         y = uncompressedRotationVec[1]
         z = 0
-        a = input("amplitude: ")
-        a = int(a)
-        n = input("Number of samples:")
-        n = int(n)
-
+        a = 20
+        n = 250
         x = a * x
         y = a * y
         print("true vec: ", true_vec_unit)
