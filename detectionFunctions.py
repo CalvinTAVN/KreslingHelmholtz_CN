@@ -116,29 +116,29 @@ def pose_estimation2(frame, mtx, dist, aruco_detector):
             id_number = int(ids[i][0])
 
             # Compute center of the marker
-            center = corner.mean(axis=0)  # (x, y)
+            center = corner.mean(axis=0)
             center_int = center.astype(int)
 
-            # Compute direction vector parallel to top edge
-            vec_side = corner[1] - corner[0]  # top edge: top-right - top-left
+            # Vector along the top edge (top-left to top-right)
+            vec_side = corner[1] - corner[0]
             vec_unit = vec_side / np.linalg.norm(vec_side)
 
-            # If marker ID is 1, rotate the vector 90° counterclockwise
+            # Rotate 90° right (clockwise) if ID == 1
             if id_number == 1:
-                vec_unit = np.array([-vec_unit[1], vec_unit[0]])
+                vec_unit = np.array([vec_unit[1], -vec_unit[0]])
 
-            # Define arrow end point
+            # Compute end point of arrow for visualization
             end_point = (center + 50 * vec_unit).astype(int)
 
             # Draw marker ID
             cv2.putText(frame, str(id_number), (center_int[0], center_int[1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
-            # Draw arrowed line from center in rotated direction (if applicable)
-            cv2.arrowedLine(frame, tuple(center_int), tuple(end_point), 
+            # Draw arrow
+            cv2.arrowedLine(frame, tuple(center_int), tuple(end_point),
                             (255, 0, 0), 2, tipLength=0.3)
 
-            # Draw center point
+            # Draw center
             cv2.circle(frame, tuple(center_int), 4, (0, 255, 255), -1)
 
     return frame
