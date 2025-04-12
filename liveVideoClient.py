@@ -20,14 +20,27 @@ import encodeFunctions as encode
 #to create a socket
 import socket
 import json
+import select
 
-def get_latest_message(sock_file):
+def get_most_recent_line(sock_file, timeout=0.01):
     latest_line = None
+
+    # Check if data is available within timeout
+    rlist, _, _ = select.select([sock_file], [], [], timeout)
+    if not rlist:
+        return None  # No data ready
+
+    # Drain the available buffer
     while True:
+        rlist, _, _ = select.select([sock_file], [], [], 0)
+        if not rlist:
+            break  # No more immediately available data
+
         line = sock_file.readline()
         if not line:
-            break
-        latest_line = line
+            break  # EOF or connection closed
+
+        latest_line = line  # keep only the latest
 
     if latest_line:
         return json.loads(latest_line)
