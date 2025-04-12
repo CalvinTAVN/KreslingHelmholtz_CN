@@ -68,7 +68,8 @@ while(True):
     prev_time = current_time    	        
     # Capture the video frame by frame
     ret, frame = vid.read() 
-    processed_frame = detect.process_videoAruco2(frame, mtx, dist, detector)
+    processed_frame, vec_unit = detect.process_videoAruco2(frame, mtx, dist, detector)
+    print(vec_unit)
     cv2.imshow('frame', processed_frame) 
 
     key = cv2.waitKey(1)

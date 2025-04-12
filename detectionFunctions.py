@@ -141,7 +141,7 @@ def pose_estimation2(frame, mtx, dist, aruco_detector):
             # Draw center
             cv2.circle(frame, tuple(center_int), 4, (0, 255, 255), -1)
 
-    return frame
+    return frame, vec_unit
 
 
 #testing on a video
