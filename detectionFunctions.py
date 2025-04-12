@@ -107,7 +107,7 @@ def pose_estimation(frame, aruco_dict_type, mtx, dist):
 
 def pose_estimation2(frame, mtx, dist, aruco_detector):
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    corners, ids, rejectedImgPoints = aruco_detector.detectMarkers(gray)
+    corners, ids, rejectedImgPoints = aruco_detector.detectMarkers(frame)
     if len(corners) > 0:
         for i in range(0, len(ids)):
             #estimate position for each marker and return values rvec and tvec
