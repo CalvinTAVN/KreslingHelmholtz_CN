@@ -40,6 +40,7 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(('localhost', 9998))  # Connect to server
 sock_file = client.makefile(mode='r')
 
+true_break = False
 try:
     while True:
         for line in sock_file:
@@ -51,10 +52,33 @@ try:
             print(true_vec_unit)
             motion = input("Enter 'r' for rolling, 't' for spinning, 'c' for constant field,  or 's' to stop:")
             if (motion == 's'):
+                true_break = True
                 break
-        break
+                
+            elif (motion == 'c'):
+                uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
+                x = uncompressedRotationVec[0]
+                y = uncompressedRotationVec[1]
+                z = 0
+
+                a = input("amplitude: ")
+                a = int(a)
+                n = input("Number of samples:")
+                n = int(n)
+
+                x = a * x
+                y = a * y
+                print("true vec: ", true_vec_unit)
+                print('compressed: ', uncompressedRotationVec)
+                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+
+        if true_break:
+            break
+
 finally:
     print("breaking everything")
     bus.shutdown()
+    sock_file.close()
     client.close()
 
