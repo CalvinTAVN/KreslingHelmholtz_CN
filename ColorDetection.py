@@ -52,7 +52,7 @@ prev_time = time.time()
 current_time = time.time()
 
 recVideo = False
-
+true_break = False
 try:
     while True:
         while(current_time-prev_time < sample_time):
@@ -91,8 +91,11 @@ try:
 
         key = cv2.waitKey(1) 
         if (key == ord('s')):
-                print("Breaking")
-                break
+            print("Breaking")
+            true_break = True
+            break
+        if true_break:
+            break
 
 finally:
     vid.release()   
