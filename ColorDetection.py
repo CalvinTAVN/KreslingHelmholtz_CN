@@ -30,10 +30,6 @@ upper_orange = np.array([25, 255, 255])
 lower_green = np.array([45, 100, 100])
 upper_green = np.array([75, 255, 255])
 
-# Detect both lines
-orange_dirs, orange_centers = detect_lines(hsv.copy(), lower_orange, upper_orange, (0, 165, 255))
-green_dirs, green_centers = detect_lines(hsv.copy(), lower_green, upper_green, (0, 255, 0))
-
 
 motion = input("input camera Number(0 side View, 1 top View): ")
 while True:
@@ -65,6 +61,10 @@ try:
         # Capture the video frame by frame
         ret, frame = vid.read() 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        # Detect both lines
+        orange_dirs, orange_centers = detect_lines(hsv.copy(), lower_orange, upper_orange, (0, 165, 255))
+        green_dirs, green_centers = detect_lines(hsv.copy(), lower_green, upper_green, (0, 255, 0))
 
         if orange_dirs and green_dirs:
             # Average direction vector (normalize)
