@@ -86,7 +86,7 @@ try:
             tip = (center_point + avg_dir * length).astype(int)
             cv2.arrowedLine(frame, tuple(center_point), tuple(tip), (255, 0, 255), 3, tipLength=0.2)
 
-            cv2.imshow("Vector Between Parallel Lines", frame)
+        cv2.imshow("Vector Between Parallel Lines", frame)
 
 
         key = cv2.waitKey(1) 
