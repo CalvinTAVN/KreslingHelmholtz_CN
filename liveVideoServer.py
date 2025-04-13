@@ -52,7 +52,7 @@ print("Waiting for connection...")
 
 conn, addr = server.accept()
 print("Connected by", addr)
-json_string = json.dumps([0, 0])
+json_string = json.dumps([0, 0, 0])
 conn.sendall((json_string + '\n').encode('utf-8'))
 
 motion = input("input camera Number(0 side View, 1 top View): ")
