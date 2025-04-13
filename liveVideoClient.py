@@ -152,14 +152,9 @@ try:
             x = encode.round2half(x)
             y = encode.round2half(y)
             z = encode.round2half(z)
-            print("starting Sequence")
-            for i in range(len(x)):
-                values = [x[i], x[i], y[i], y[i], z[i], z[i]]
-                tx = encode.encodeNum(values)
-                message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
-                bus.send(message, timeout=0.5)
-                time.sleep(0.01)
-            print("end State: ", state)
+            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+
             #flip in around y axis
         if (motion == 'f'):
             print("Please indicate initial position")
@@ -181,14 +176,8 @@ try:
             x = encode.round2half(x)
             y = encode.round2half(y)
             z = encode.round2half(z)
-            print("starting Sequence")
-            for i in range(len(x)):
-                values = [x[i], x[i], y[i], y[i], z[i], z[i]]
-                tx = encode.encodeNum(values)
-                message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
-                bus.send(message, timeout=0.5)
-                time.sleep(0.01)
-            print("end State: ", state)
+            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
 
         if true_break:
             break
