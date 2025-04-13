@@ -24,12 +24,17 @@ def detect_lines(image, lower_hsv, upper_hsv, bgr_color):
     return directions, centers
 
 # HSV ranges (tweak as needed)
-lower_orange = np.array([0, 142, 215])
-upper_orange = np.array([11, 216,255])
+lower_orange = np.array([0, 11, 247])
+upper_orange = np.array([22, 187, 255])
 
-lower_green = np.array([65, 51, 79])
-upper_green = np.array([92, 139, 255])
+lower_green = np.array([75, 6, 242])
+upper_green = np.array([94, 255, 255])
 
+
+#buffer
+center_history = []
+dir_history = []
+buffer_size = 5  
 
 motion = input("input camera Number(0 side View, 1 top View): ")
 while True:
@@ -62,9 +67,12 @@ try:
         ret, frame = vid.read() 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
+        #gaussian blur the image
+        blurred = cv2.GaussianBlur(hsv, (5, 5), 0)
+
         # Detect both lines
-        orange_dirs, orange_centers = detect_lines(hsv.copy(), lower_orange, upper_orange, (0, 165, 255))
-        green_dirs, green_centers = detect_lines(hsv.copy(), lower_green, upper_green, (0, 255, 0))
+        orange_dirs, orange_centers = detect_lines(blurred.copy(), lower_orange, upper_orange, (0, 165, 255))
+        green_dirs, green_centers = detect_lines(blurred.copy(), lower_green, upper_green, (0, 255, 0))
 
         if orange_dirs and green_dirs:
             # Average direction vector (normalize)
@@ -78,13 +86,25 @@ try:
             all_centers = orange_centers + green_centers
             center_point = np.mean(all_centers, axis=0).astype(int)
 
+            center_history.append(center_point)
+            dir_history.append(avg_dir)
+
+            # Keep history length fixed
+            if len(center_history) > buffer_size:
+                center_history.pop(0)
+                dir_history.pop(0)
+
+            smoothed_center = np.mean(center_history, axis=0).astype(int)
+            smoothed_dir = np.mean(dir_history, axis=0)
+            smoothed_dir = smoothed_dir / np.linalg.norm(smoothed_dir) if np.linalg.norm(smoothed_dir) != 0 else smoothed_dir
+
             # Draw the center point
-            cv2.circle(frame, tuple(center_point), 5, (255, 0, 255), -1)
+            cv2.circle(frame, tuple(smoothed_center), 5, (255, 0, 255), -1)
 
             # Draw the direction vector
             length = 100  # length of the arrow
-            tip = (center_point + avg_dir * length).astype(int)
-            cv2.arrowedLine(frame, tuple(center_point), tuple(tip), (255, 0, 255), 3, tipLength=0.2)
+            tip = (smoothed_center + avg_dir * length).astype(int)
+            cv2.arrowedLine(frame, tuple(smoothed_center), tuple(tip), (255, 0, 255), 3, tipLength=0.2)
 
         cv2.imshow("Vector Between Parallel Lines", frame)
 
