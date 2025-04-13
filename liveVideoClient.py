@@ -92,7 +92,7 @@ try:
             break
                 
         elif (motion == 'c'):
-            direction = input("0 for side compression, 1 for top compression")
+            direction = input("0 for side compression, 1 for top compression: ")
             direction = int(direction)
             if direction == 1:
                 uncompressedRotationVec = detect.rotate_vector_counterclockwise(top_vec_unit, 91.0685)
@@ -135,7 +135,7 @@ try:
 
 
         elif (motion == 'u'):
-            direction = input("0 for side compression, 1 for top compression")
+            direction = input("0 for side compression, 1 for top compression: ")
             direction = int(direction)
             
             if direction == 1:
