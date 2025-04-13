@@ -88,47 +88,48 @@ def roll_yz(step_no, speed, init, A, Ts, direction=0):
     return [x, y, z, state]
 
 def roll_around_xz(step_no, speed, init, A, Ts, direction=0):
-    """
-    Roll magnetization vector around the Y-axis (i.e., in the XZ plane).
-    
-    Parameters:
-        step_no (int): Number of quarter turns (e.g., 4 = full roll)
-        speed (float): Frequency of rotation in Hz (rotations per second)
-        init (list): Initial magnetization vector (3D)
-        A (float): Amplitude of magnetization
-        Ts (float): Sampling time (s)
-        direction (str): 'CW' (clockwise) or 'CCW' (counterclockwise) viewed along +Y axis
+	"""
+	Roll magnetization vector around the Y-axis (i.e., in the XZ plane).
 
-    Returns:
-        [x, y, z, state]: Arrays of magnetization over time and final vector
-    """
-    k = int(1 / (4 * speed * Ts))  # samples per quarter roll
-    n = k * step_no
-    t = np.arange(n) * Ts
+	Parameters:
+		step_no (int): Number of quarter turns (e.g., 4 = full roll)
+		speed (float): Frequency of rotation in Hz (rotations per second)
+		init (list): Initial magnetization vector (3D)
+		A (float): Amplitude of magnetization
+		Ts (float): Sampling time (s)
+		direction (str): 'CW' (clockwise) or 'CCW' (counterclockwise) viewed along +Y axis
 
-    init_vec = np.array(init)
+	Returns:
+		[x, y, z, state]: Arrays of magnetization over time and final vector
+	"""
+	k = int(1 / (4 * speed * Ts))  # samples per quarter roll
+	n = k * step_no
+	t = np.arange(n) * Ts
 
-    # Rotation axis: Y-axis
-    roll_axis = np.array([0, 1, 0])
-    if direction == 1 : #1 is CCW
-        roll_axis = -roll_axis  # flip for CCW rotation
+	init_vec = np.array(init)
 
-    # Rotation angle increases over time
-    rotation_angles = 2 * np.pi * speed * t
+	# Rotation axis: Y-axis
+	roll_axis = np.array([0, 1, 0])
+	if direction == 1 : #1 is CCW
+		roll_axis = -roll_axis  # flip for CCW rotation
 
-    # Construct rotation vectors: angle * axis
-    rotation_vectors = np.outer(rotation_angles, roll_axis)
+	# Rotation angle increases over time
+	rotation_angles = 2 * np.pi * speed * t
 
-    # Apply rotation to initial vector
-    rotations = R.from_rotvec(rotation_vectors)
-    magnetization = rotations.apply(init_vec)
+	# Construct rotation vectors: angle * axis
+	rotation_vectors = np.outer(rotation_angles, roll_axis)
 
-    x, y, z = A * magnetization.T
+	# Apply rotation to initial vector
+	rotations = R.from_rotvec(rotation_vectors)
+	magnetization = rotations.apply(init_vec)
 
-    # Final orientation
-    final_rotation = R.from_rotvec(rotation_vectors[-1])
-    state_vec = final_rotation.apply(init_vec)
-    state = state_vec.round(decimals=2).tolist()
+	x, y, z = A * magnetization.T
+
+	# Final orientation
+	final_rotation = R.from_rotvec(rotation_vectors[-1])
+	state_vec = final_rotation.apply(init_vec)
+	state = state_vec.round(decimals=2).tolist()
+
 	return [x, y, z, state]
 
 
