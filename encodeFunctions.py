@@ -128,7 +128,8 @@ def roll_around_xz(step_no, speed, init, A, Ts, direction=0):
     # Final orientation
     final_rotation = R.from_rotvec(rotation_vectors[-1])
     state_vec = final_rotation.apply(init_vec)
-    state = state
+    state = state_vec.round(decimals=2).tolist()
+	return [x, y, z, state]
 
 
 #rotate in the X-Y plane
