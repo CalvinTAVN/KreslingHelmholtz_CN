@@ -146,7 +146,7 @@ try:
             direction = input("Direction: ")
             direction = int(direction)
             speed = 0.1
-            A = 5
+            A = 20
             
             [x, y, z, state] = encode.roll_yz(step_no, speed, state, A, Ts, direction)
             x = encode.round2half(x)
