@@ -24,11 +24,11 @@ def detect_lines(image, lower_hsv, upper_hsv, bgr_color):
     return directions, centers
 
 # HSV ranges (tweak as needed)
-lower_orange = np.array([10, 100, 100])
-upper_orange = np.array([25, 255, 255])
+lower_orange = np.array([0, 142, 215])
+upper_orange = np.array([11, 216,255])
 
-lower_green = np.array([45, 100, 100])
-upper_green = np.array([75, 255, 255])
+lower_green = np.array([65, 51, 79])
+upper_green = np.array([92, 139, 255])
 
 
 motion = input("input camera Number(0 side View, 1 top View): ")
