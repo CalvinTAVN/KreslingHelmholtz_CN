@@ -139,13 +139,14 @@ try:
             z0 = input("Enter z0: ")
             
             state = [float(x0), float(y0), float(z0)]
-            step_no = 4
+            step_no = input("step_no: ")
+            step_no = int(step_no)
+
             #Direction = 0 is CCW, Direction = 1 is CCW
             direction = input("Direction: ")
             direction = int(direction)
             speed = 0.1
-            A = input("Amplitude: ")
-            A = int(A)
+            A = 5
             
             [x, y, z, state] = encode.roll_yz(step_no, speed, state, A, Ts, direction)
             x = encode.round2half(x)
@@ -159,6 +160,36 @@ try:
                 bus.send(message, timeout=0.5)
                 time.sleep(0.01)
             print("end State: ", state)
+            #flip in around y axis
+        if (motion == 'f'):
+            print("Please indicate initial position")
+            x0 = input("Enter x0: ")
+            y0 = input("Enter y0: ")
+            z0 = input("Enter z0: ")
+            
+            state = [float(x0), float(y0), float(z0)]
+            step_no = input("step_no: ")
+            step_no = int(step_no)
+
+            #Direction = 0 is CCW, Direction = 1 is CCW
+            direction = input("Direction: ")
+            direction = int(direction)
+            speed = 0.1
+            A = 5
+            
+            [x, y, z, state] = encode.roll_around_xz(step_no, speed, state, A, Ts, direction)
+            x = encode.round2half(x)
+            y = encode.round2half(y)
+            z = encode.round2half(z)
+            print("starting Sequence")
+            for i in range(len(x)):
+                values = [x[i], x[i], y[i], y[i], z[i], z[i]]
+                tx = encode.encodeNum(values)
+                message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
+                bus.send(message, timeout=0.5)
+                time.sleep(0.01)
+            print("end State: ", state)
+
         if true_break:
             break
 finally:
