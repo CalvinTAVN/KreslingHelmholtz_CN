@@ -72,56 +72,110 @@ try:
     while True:
         latest_line = get_most_recent_line(sock_file)
         if not latest_line:
-            vec_unit = [0, 0, 0]
+            vec_unit = [0, 0, 0, 0]
         else:
             vec_unit = np.array(latest_line)
-        if vec_unit[0] == 1.0: #for top down vie
-            true_vec_unit = np.array([vec_unit[2], -vec_unit[1]])
+        if vec_unit[0] == 1.0: #for top down view
+                                    #this is in x, y plane  
+            top_vec_unit = np.array([vec_unit[2], -vec_unit[1]])
         else:
-            true_vec_unit = np.array([vec_unit[2], -vec_unit[1]]) #TBD
-        print("Latest vec_unit:", vec_unit)
-        print("true_vec_unit: ", true_vec_unit)
+                                    #this is now y, z for sideways camera
+            side_vec_unit = np.array([-vec_unit[1], -vec_unit[2]]) #TBD
+        top_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
+        side_vec_unit = np.array([-vec_unit[2], -vec_unit[3]]) 
+        print(f"Original: {vec_unit}")
+        print(f"side_vec_unit: {side_vec_unit}")
+        print(f"top_vec_unit: {top_vec_unit}")
         motion = input("s to stop, c to compress, u to uncompress:")
         if (motion == 's'):
             true_break = True
             break
                 
         elif (motion == 'c'):
-            uncompressedRotationVec = detect.rotate_vector_counterclockwise(true_vec_unit, 91.0685)
-            x = uncompressedRotationVec[0]
-            y = uncompressedRotationVec[1]
-            z = 0
+            direction = input("0 for side compression, 1 for top compression")
+            direction = int(direction)
+            if direction == 1:
+                uncompressedRotationVec = detect.rotate_vector_counterclockwise(top_vec_unit, 91.0685)
+                x = uncompressedRotationVec[0]
+                y = uncompressedRotationVec[1]
+                z = 0
 
-            a = input("amplitude: ")
-            a = int(a)
-            n = input("Number of samples:")
-            n = int(n)
+                a = input("amplitude: ")
+                a = int(a)
+                n = input("Number of samples:")
+                n = int(n)
 
-            x = a * x
-            y = a * y
-            print("original vec: ", vec_unit)
-            print("true vec: ", true_vec_unit)
-            print('uncompressed: ', uncompressedRotationVec)
-            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+                x = a * x
+                y = a * y
+                print("original vec: ", vec_unit)
+                print("top true vec: ", top_vec_unit)
+                print('uncompressed: ', uncompressedRotationVec)
+                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+            elif direction == 0:
+                uncompressedRotationVec = detect.rotate_vector_counterclockwise(side_vec_unit, 91.0685)
+                x = 0
+                y = uncompressedRotationVec[0]
+                z = uncompressedRotationVec[1]
+
+                a = input("amplitude: ")
+                a = int(a)
+                n = input("Number of samples:")
+                n = int(n)
+
+                z = a * z
+                y = a * y
+                print("original vec: ", vec_unit)
+                print("side true vec: ", side_vec_unit)
+                print('uncompressed: ', uncompressedRotationVec)
+                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+            else: 
+                print("incorrect input")
+
+
         elif (motion == 'u'):
-            uncompressedRotationVec = detect.rotate_vector_clockwise(true_vec_unit, 110)
-            x = uncompressedRotationVec[0]
-            y = uncompressedRotationVec[1]
-            z = 0
+            direction = input("0 for side compression, 1 for top compression")
+            direction = int(direction)
+            
+            if direction == 1:
+                uncompressedRotationVec = detect.rotate_vector_clockwise(top_vec_unit, 110)
+                x = uncompressedRotationVec[0]
+                y = uncompressedRotationVec[1]
+                z = 0
 
-            a = input("amplitude: ")
-            a = int(a)
-            n = input("Number of samples:")
-            n = int(n)
+                a = input("amplitude: ")
+                a = int(a)
+                n = input("Number of samples:")
+                n = int(n)
 
-            x = a * x
-            y = a * y
-            print("original vec: ", vec_unit)
-            print("true vec: ", true_vec_unit)
-            print('compressed: ', uncompressedRotationVec)
-            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+                x = a * x
+                y = a * y
+                print("original vec: ", vec_unit)
+                print("top true vec: ", top_vec_unit)
+                print('compressed: ', uncompressedRotationVec)
+                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+
+            elif direction == 0:
+                uncompressedRotationVec = detect.rotate_vector_clockwise(side_vec_unit, 110)
+                y = uncompressedRotationVec[0]
+                z = uncompressedRotationVec[1]
+                x = 0
+
+                a = input("amplitude: ")
+                a = int(a)
+                n = input("Number of samples:")
+                n = int(n)
+
+                z = a * z
+                y = a * y
+                print("original vec: ", vec_unit)
+                print("side true vec: ", side_vec_unit)
+                print('compressed: ', uncompressedRotationVec)
+                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+
         if true_break:
             break
 finally:
