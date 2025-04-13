@@ -169,7 +169,7 @@ try:
             direction = input("Direction: ")
             direction = int(direction)
             speed = 0.1
-            A = 5
+            A = 30
             
             [x, y, z, state] = encode.roll_around_xz(step_no, speed, state, A, Ts, direction)
             x = encode.round2half(x)
