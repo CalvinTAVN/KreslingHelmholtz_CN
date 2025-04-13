@@ -140,13 +140,14 @@ try:
             
             state = [float(x0), float(y0), float(z0)]
             step_no = 4
-            angle = input("Angle: ")
-            angle = int(angle)
+            #Direction = 0 is CCW, Direction = 1 is CCW
+            angle = input("Direction: ")
+            direction = int(direction)
             speed = 0.1
             A = input("Amplitude: ")
             A = int(A)
             
-            [x, y, z, state] = encode.roll_yz(step_no, speed, state, A, Ts, direction=0)
+            [x, y, z, state] = encode.roll_yz(step_no, speed, state, A, Ts, direction)
             x = encode.round2half(x)
             y = encode.round2half(y)
             z = encode.round2half(z)

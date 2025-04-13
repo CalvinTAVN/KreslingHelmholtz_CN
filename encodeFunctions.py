@@ -65,7 +65,7 @@ def roll_yz(step_no, speed, init, A, Ts, direction=0):
 
     # Rotation axis: X-axis
     roll_axis = np.array([1, 0, 0])
-    if direction == 1: #CCW
+    if direction == 1: #CW
         roll_axis = -roll_axis  # flip axis to reverse rotation direction
 
     # Rotation angles over time
