@@ -152,8 +152,7 @@ try:
             x = encode.round2half(x)
             y = encode.round2half(y)
             z = encode.round2half(z)
-            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+            encode.sendCAN(x, y, z, can = can, bus = bus)
 
             #flip in around y axis
         if (motion == 'f'):
@@ -176,8 +175,7 @@ try:
             x = encode.round2half(x)
             y = encode.round2half(y)
             z = encode.round2half(z)
-            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+            encode.sendCAN(x, y, z, can = can, bus = bus)
 
         if true_break:
             break
