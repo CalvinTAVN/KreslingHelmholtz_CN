@@ -42,43 +42,50 @@ def round2half(arr):
 def constant(t, A):	
 	return A*np.ones(len(t))
 
-def roll(step_no, angle, speed, init, A, Ts):
+def roll_yz(step_no, speed, init, A, Ts, direction=0):
+    """
+    Roll magnetization vector around the X-axis (i.e., in the YZ plane).
+    
+    Parameters:
+        step_no (int): Number of quarter turns (e.g., 4 = full roll)
+        speed (float): Frequency of rotation in Hz (rotations per second)
+        init (list): Initial magnetization vector (3D)
+        A (float): Amplitude of magnetization
+        Ts (float): Sampling time (s)
+        direction (str): 'CW' (clockwise) or 'CCW' (counterclockwise) viewed along +X axis
+        
+    Returns:
+        [x, y, z, final_state]: Arrays of magnetization over time, and final magnetization vector
+    """
     k = int(1 / (4 * speed * Ts))  # samples per quarter roll
-    theta = np.radians(angle)
     n = k * step_no
     t = np.arange(n) * Ts
 
-    # Initial magnetization vector
     init_vec = np.array(init)
 
-    # Determine rotation axis (perpendicular to init and roll direction)
-    if np.allclose(init_vec, [0, 0, 1]) or np.allclose(init_vec, [0, 0, -1]):
-        roll_direction = np.array([np.cos(theta), np.sin(theta), 0])
-    else:
-        roll_direction = np.cross(init_vec, [0, 0, 1])
-        if np.linalg.norm(roll_direction) == 0:
-            roll_direction = np.array([1, 0, 0])  # Default axis
-        else:
-            roll_direction /= np.linalg.norm(roll_direction)
+    # Rotation axis: X-axis
+    roll_axis = np.array([1, 0, 0])
+    if direction == 1: #CCW
+        roll_axis = -roll_axis  # flip axis to reverse rotation direction
 
-    # Rotation angle over time
+    # Rotation angles over time
     rotation_angles = 2 * np.pi * speed * t
 
-    # Rotation vectors (angle * axis)
-    rotation_vectors = np.outer(rotation_angles, roll_direction)
+    # Create rotation vectors: angle * axis
+    rotation_vectors = np.outer(rotation_angles, roll_axis)
 
-    # Apply rotation to initial magnetization
+    # Apply rotation to initial vector
     rotations = R.from_rotvec(rotation_vectors)
     magnetization = rotations.apply(init_vec)
 
     x, y, z = A * magnetization.T
 
-    # Final state after steps
+    # Final state after all rotations
     final_rotation = R.from_rotvec(rotation_vectors[-1])
     state_vec = final_rotation.apply(init_vec)
     state = state_vec.round(decimals=2).tolist()
 
-    return [x, y, -z, state]
+    return [x, y, z, state]
 
 #rotate in the X-Y plane
 def rotate(angle, direction, speed, init, A, Ts):

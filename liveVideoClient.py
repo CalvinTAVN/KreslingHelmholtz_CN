@@ -146,7 +146,7 @@ try:
             A = input("Amplitude: ")
             A = int(A)
             
-            [x, y, z, state] = encode.roll(step_no, angle, speed, state, A, Ts)
+            [x, y, z, state] = encode.roll_yz(step_no, speed, state, A, Ts, direction=0)
             x = encode.round2half(x)
             y = encode.round2half(y)
             z = encode.round2half(z)
