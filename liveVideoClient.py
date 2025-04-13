@@ -141,7 +141,7 @@ try:
             state = [float(x0), float(y0), float(z0)]
             step_no = 4
             #Direction = 0 is CCW, Direction = 1 is CCW
-            angle = input("Direction: ")
+            direction = input("Direction: ")
             direction = int(direction)
             speed = 0.1
             A = input("Amplitude: ")
