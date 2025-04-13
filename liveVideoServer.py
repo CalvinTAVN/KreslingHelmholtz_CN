@@ -93,8 +93,12 @@ try:
         side_processed_frame, side_vec_unit = detect.process_videoAruco2(side_frame, mtx, dist, detector)
         vec_unit = np.array([top_vec_unit[0], top_vec_unit[1], side_vec_unit[0], side_vec_unit[1]])
         #note frame of actual Helmholtz Coil is +x is down, + y is left
-        json_string = json.dumps(vec_unit.tolist())
-        conn.sendall((json_string + '\n').encode('utf-8'))
+        try:
+            json_string = json.dumps(vec_unit.tolist())
+            conn.sendall((json_string + '\n').encode('utf-8'))
+        except:
+             print("true Break")
+             break
 
         combined = cv2.vconcat([top_processed_frame, side_processed_frame])
         scale_percent = 50  # e.g. show at 60% of original size
@@ -126,7 +130,6 @@ finally:
     sideVid.release()  
     # Destroy all the windows 
     cv2.destroyAllWindows() 
-
     if recVideo:
         fileName = input("give file name: ")
         videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/3_30_videos/' + fileName + '.avi'
