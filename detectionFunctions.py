@@ -274,8 +274,8 @@ def process_videoAruco(input_image, mtx, dist):
 def process_videoAruco2(input_image, mtx, dist, detector):
 
     #undistortedGray = undistortImage(input_image, mtx, dist)
-    frame = pose_estimation2(input_image, mtx, dist, detector)
-    return frame
+    frame, vec_unit = pose_estimation2(input_image, mtx, dist, detector)
+    return frame, vec_unit
 
 def process_video2(input_video_path, output_video_path, mtx, dist):
     cap = cv2.VideoCapture(input_video_path)

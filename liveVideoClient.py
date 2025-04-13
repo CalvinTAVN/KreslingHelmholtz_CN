@@ -75,7 +75,7 @@ try:
             vec_unit = [0, 0, 0]
         else:
             vec_unit = np.array(latest_line)
-        if vec_unit[0] == 1: #for top down vie
+        if vec_unit[0] == 1.0: #for top down vie
             true_vec_unit = np.array([vec_unit[2], -vec_unit[1]])
         else:
             true_vec_unit = np.array([vec_unit[2], -vec_unit[1]]) #TBD
