@@ -96,8 +96,12 @@ try:
         json_string = json.dumps(vec_unit.tolist())
         conn.sendall((json_string + '\n').encode('utf-8'))
 
-        combined = cv2.hconcat([top_processed_frame, side_processed_frame])
-        cv2.imshow("Combined View", combined)
+        combined = cv2.vconcat([top_processed_frame, side_processed_frame])
+        scale_percent = 50  # e.g. show at 60% of original size
+        width = int(combined.shape[1] * scale_percent / 100)
+        height = int(combined.shape[0] * scale_percent / 100)
+        resized_combined = cv2.resize(combined, (width, height))
+        cv2.imshow("Combined View", resized_combined)
         key = cv2.waitKey(1) 
         if (key == ord('s')):
                 print("Breaking")
