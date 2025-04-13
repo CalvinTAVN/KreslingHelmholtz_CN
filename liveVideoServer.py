@@ -87,7 +87,7 @@ try:
         prev_time = current_time    	        
         # Capture the video frame by frame
         top_ret, top_frame = topVid.read() 
-        side_ret, side_frame = side_frame.read() 
+        side_ret, side_frame = sideVid.read() 
         #note vec unit of image is +y is right, +y is down
         top_processed_frame, top_vec_unit = detect.process_videoAruco2(top_frame, mtx, dist, detector)
         side_processed_frame, side_vec_unit = detect.process_videoAruco2(side_frame, mtx, dist, detector)
