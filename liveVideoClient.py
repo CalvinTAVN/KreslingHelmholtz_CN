@@ -55,6 +55,7 @@ bus = can.interface.Bus(bustype='socketcan', channel='can1', bitrate=1000000)
 print("Canbus Successfully Setup. \n")
 
 #initial Values of helmholtz coils
+Ts = 0.01
 values = [0, 0, 0, 0, 0, 0]
 tx = encode.encodeNum(values)
 message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
@@ -91,91 +92,71 @@ try:
             true_break = True
             break
                 
+        #compression
         elif (motion == 'c'):
-            direction = input("0 for side compression, 1 for top compression: ")
-            direction = int(direction)
-            if direction == 1:
-                uncompressedRotationVec = detect.rotate_vector_counterclockwise(top_vec_unit, 91.0685)
-                x = uncompressedRotationVec[0]
-                y = uncompressedRotationVec[1]
-                z = 0
+            uncompressedRotationVec = detect.rotate_vector_counterclockwise(top_vec_unit, 91.0685)
+            x = uncompressedRotationVec[0]
+            y = uncompressedRotationVec[1]
+            z = 0
 
-                a = input("amplitude: ")
-                a = int(a)
-                n = input("Number of samples:")
-                n = int(n)
+            a = input("amplitude: ")
+            a = int(a)
+            n = input("Number of samples:")
+            n = int(n)
 
-                x = a * x
-                y = a * y
-                print("original vec: ", vec_unit)
-                print("top true vec: ", top_vec_unit)
-                print('uncompressed: ', uncompressedRotationVec)
-                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-            elif direction == 0:
-                uncompressedRotationVec = detect.rotate_vector_counterclockwise(side_vec_unit, 91.0685)
-                x = 0
-                y = uncompressedRotationVec[0]
-                z = uncompressedRotationVec[1]
+            x = a * x
+            y = a * y
+            print("original vec: ", vec_unit)
+            print("top true vec: ", top_vec_unit)
+            print('uncompressed: ', uncompressedRotationVec)
+            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
 
-                a = input("amplitude: ")
-                a = int(a)
-                n = input("Number of samples:")
-                n = int(n)
-
-                z = a * z
-                y = a * y
-                print("original vec: ", vec_unit)
-                print("side true vec: ", side_vec_unit)
-                print('uncompressed: ', uncompressedRotationVec)
-                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-            else: 
-                print("incorrect input")
-
-
+        #uncompression
         elif (motion == 'u'):
-            direction = input("0 for side compression, 1 for top compression: ")
-            direction = int(direction)
+            uncompressedRotationVec = detect.rotate_vector_clockwise(top_vec_unit, 110)
+            x = uncompressedRotationVec[0]
+            y = uncompressedRotationVec[1]
+            z = 0
+
+            a = input("amplitude: ")
+            a = int(a)
+            n = input("Number of samples:")
+            n = int(n)
+
+            x = a * x
+            y = a * y
+            print("original vec: ", vec_unit)
+            print("top true vec: ", top_vec_unit)
+            print('compressed: ', uncompressedRotationVec)
+            [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+
+        if (motion == 'r'):
+            print("Please indicate initial position")
+            x0 = input("Enter x0: ")
+            y0 = input("Enter y0: ")
+            z0 = input("Enter z0: ")
             
-            if direction == 1:
-                uncompressedRotationVec = detect.rotate_vector_clockwise(top_vec_unit, 110)
-                x = uncompressedRotationVec[0]
-                y = uncompressedRotationVec[1]
-                z = 0
-
-                a = input("amplitude: ")
-                a = int(a)
-                n = input("Number of samples:")
-                n = int(n)
-
-                x = a * x
-                y = a * y
-                print("original vec: ", vec_unit)
-                print("top true vec: ", top_vec_unit)
-                print('compressed: ', uncompressedRotationVec)
-                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-
-            elif direction == 0:
-                uncompressedRotationVec = detect.rotate_vector_clockwise(side_vec_unit, 110)
-                y = uncompressedRotationVec[0]
-                z = uncompressedRotationVec[1]
-                x = 0
-
-                a = input("amplitude: ")
-                a = int(a)
-                n = input("Number of samples:")
-                n = int(n)
-
-                z = a * z
-                y = a * y
-                print("original vec: ", vec_unit)
-                print("side true vec: ", side_vec_unit)
-                print('compressed: ', uncompressedRotationVec)
-                [x1, x2, y1, y2, z1, z2] = encode.con([x, y, z], n)
-                encode.sendCAN(x1, y1, z1, can = can, bus = bus)
-
+            state = [float(x0), float(y0), float(z0)]
+            step_no = 4
+            angle = 0
+            speed = 0.1
+            A = input("Amplitude: ")
+            A = int(A)
+            
+            [x, y, z, state] = encode.roll(step_no, angle, speed, state, A, Ts)
+            x = encode.round2half(x)
+            y = encode.round2half(y)
+            z = encode.round2half(z)
+            print("starting Sequence")
+            for i in range(len(x)):
+                values = [x[i], x[i], y[i], y[i], z[i], z[i]]
+                tx = encode(values)
+                message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
+                bus.send(message, timeout=0.5)
+                time.sleep(0.01)
+            print("end State: ", state)
         if true_break:
             break
 finally:
