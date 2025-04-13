@@ -72,10 +72,13 @@ try:
     while True:
         latest_line = get_most_recent_line(sock_file)
         if not latest_line:
-            vec_unit = [0, 0]
+            vec_unit = [0, 0, 0]
         else:
             vec_unit = np.array(latest_line)
-        true_vec_unit = np.array([vec_unit[1], -vec_unit[0]])
+        if vec_unit[0] == 1: #for top down vie
+            true_vec_unit = np.array([vec_unit[2], -vec_unit[1]])
+        else:
+            true_vec_unit = np.array([vec_unit[2], -vec_unit[1]]) #TBD
         print("Latest vec_unit:", vec_unit)
         print("true_vec_unit: ", true_vec_unit)
         motion = input("s to stop, c to compress, u to uncompress:")

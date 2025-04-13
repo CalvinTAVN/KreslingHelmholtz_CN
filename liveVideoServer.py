@@ -86,7 +86,7 @@ try:
         ret, frame = vid.read() 
         #note vec unit of image is +y is right, +y is down
         processed_frame, vec_unit = detect.process_videoAruco2(frame, mtx, dist, detector)
-
+        vec_unit = np.ndarray([motion, vec_unit[0], vec_unit[1]])
         #note frame of actual Helmholtz Coil is +x is down, + y is left
         json_string = json.dumps(vec_unit.tolist())
         conn.sendall((json_string + '\n').encode('utf-8'))
