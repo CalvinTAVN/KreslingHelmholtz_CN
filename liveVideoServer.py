@@ -108,8 +108,16 @@ try:
                 break
 
         elif (key == ord('p')):
-            recVideo = True
-            print("Recording Video Now")
+            if not recVideo:
+                print("Recording Video")
+                recVideo = True
+            if recVideo:
+                 print("stopping the recording")
+                 recVideo = False
+                 video.clear()
+            
+        if recVideo:
+             video.append(resized_combined)
 finally: 
     print("closing, turning everything off")
     conn.close()
@@ -118,6 +126,21 @@ finally:
     sideVid.release()  
     # Destroy all the windows 
     cv2.destroyAllWindows() 
+
+    if recVideo:
+        fileName = input("give file name: ")
+        videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/3_30_videos/' + fileName + '.avi'
+        videoLength = len(video)
+        width = len(video[0])
+        length = len(video[0][0])
+        print(f"vidLength: {videoLength} width: {width} length: {length}")
+        print(f"single frame type{video[0].shape}")
+        out = cv2.VideoWriter(videoOutputFile,  
+                            cv2.VideoWriter_fourcc(*'MJPG'), 
+                            1/sample_time, (length, width)) 
+        for frame in video:
+            out.write(frame) # frame is a numpy.ndarray with shape (1280, 720, 3)
+        out.release()
 
 
     
