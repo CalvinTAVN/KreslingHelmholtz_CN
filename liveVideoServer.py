@@ -124,12 +124,6 @@ try:
              video.append(resized_combined)
 finally: 
     print("closing, turning everything off")
-    conn.close()
-    server.close()
-    topVid.release() 
-    sideVid.release()  
-    # Destroy all the windows 
-    cv2.destroyAllWindows() 
     if recVideo:
         fileName = input("give file name: ")
         videoOutputFile = '/home/kostas/Documents/KreslingHelmholtz_CN/Videos/3_30_videos/' + fileName + '.avi'
@@ -144,6 +138,13 @@ finally:
         for frame in video:
             out.write(frame) # frame is a numpy.ndarray with shape (1280, 720, 3)
         out.release()
+    conn.close()
+    server.close()
+    topVid.release() 
+    sideVid.release()  
+    # Destroy all the windows 
+    cv2.destroyAllWindows() 
+    
 
 
     
