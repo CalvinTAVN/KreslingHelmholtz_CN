@@ -140,7 +140,8 @@ try:
             
             state = [float(x0), float(y0), float(z0)]
             step_no = 4
-            angle = 0
+            angle = input("Angle: ")
+            angle = int(angle)
             speed = 0.1
             A = input("Amplitude: ")
             A = int(A)
