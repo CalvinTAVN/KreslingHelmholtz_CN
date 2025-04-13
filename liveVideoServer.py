@@ -111,7 +111,7 @@ try:
             if not recVideo:
                 print("Recording Video")
                 recVideo = True
-            if recVideo:
+            elif recVideo:
                  print("stopping the recording")
                  recVideo = False
                  video.clear()
