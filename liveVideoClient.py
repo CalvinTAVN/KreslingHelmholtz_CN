@@ -152,7 +152,7 @@ try:
             print("starting Sequence")
             for i in range(len(x)):
                 values = [x[i], x[i], y[i], y[i], z[i], z[i]]
-                tx = encode(values)
+                tx = encode.encode(values)
                 message = can.Message(arbitration_id=0x00, is_extended_id=False, data= tx)
                 bus.send(message, timeout=0.5)
                 time.sleep(0.01)
