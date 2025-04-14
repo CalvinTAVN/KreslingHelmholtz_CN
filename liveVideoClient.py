@@ -91,7 +91,26 @@ try:
         if (motion == 's'):
             true_break = True
             break
-                
+        elif (motion == 'l'):
+            x = input("x:")
+            x = int(x)
+            
+            y = input("y:")
+            y = int(y)
+            
+            z = input("z:")
+            z = int(z)
+            
+            n = input("Number of samples:")
+            n = int(n)
+            
+            
+            [x1, x2, y1, y2, z1, z2] = encode.con([x,y,z], n)
+            encode.sendCAN(x1, y1, z1, can = can, bus = bus)
+
+
+            
+
         #compression
         elif (motion == 'c'):
             uncompressedRotationVec = detect.rotate_vector_counterclockwise(top_vec_unit, 91.0685)
